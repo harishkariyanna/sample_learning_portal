@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-brand">
+            <i class="fas fa-chart-line"></i> Manager Panel
+        </div>
+        <nav>
+            <a href="manager_dashboard.html" class="sidebar-item">
+                <i class="fas fa-tachometer-alt"></i> Dashboard
+            </a>
+            <a href="team_management.html" class="sidebar-item">
+                <i class="fas fa-users"></i> Team Management
+            </a>
+            <a href="assign_learning_path.html" class="sidebar-item">
+                <i class="fas fa-route"></i> Learning Paths
+            </a>
+            <a href="weekly_hours.html" class="sidebar-item">
+                <i class="fas fa-clock"></i> Weekly Hours
+            </a>
+            <a href="reports.html" class="sidebar-item">
+                <i class="fas fa-chart-bar"></i> Reports
+            </a>
+            <a href="settings.html" class="sidebar-item active">
+                <i class="fas fa-cog"></i> Settings
+            </a>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Top Navbar -->
+        <div class="top-navbar d-flex justify-content-between align-items-center">
+            <div>
+                <h5 class="mb-0"><i class="fas fa-users text-primary"></i> Team: Development Team</h5>
+            </div>
+            <div class="d-flex align-items-center">
+                <span class="me-3"><i class="fas fa-user-circle"></i> Manager Name</span>
+                <button class="btn btn-danger btn-logout" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </div>
+
+        <!-- Page Content -->
+        <div class="container-fluid">
+            <h2 class="mb-4">Settings</h2>
+
+            <!-- Profile Settings -->
+            <div class="form-section mb-4">
+                <h5 class="mb-3"><i class="fas fa-user me-2"></i>Profile Settings</h5>
+                <form>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Full Name</label>
+                            <input type="text" class="form-control" value="Manager Name">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control" value="manager@company.com">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Department</label>
+                            <select class="form-select">
+                                <option>Engineering</option>
+                                <option>Marketing</option>
+                                <option>Sales</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Team</label>
+                            <input type="text" class="form-control" value="Development Team">
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-primary">Update Profile</button>
+                </form>
+            </div>
+
+            <!-- Notification Settings -->
+            <div class="form-section mb-4">
+                <h5 class="mb-3"><i class="fas fa-bell me-2"></i>Notification Settings</h5>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="emailNotif" checked>
+                            <label class="form-check-label" for="emailNotif">
+                                Email Notifications
+                            </label>
+                        </div>
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="weeklyReport" checked>
+                            <label class="form-check-label" for="weeklyReport">
+                                Weekly Progress Reports
+                            </label>
+                        </div>
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="completionAlert">
+                            <label class="form-check-label" for="completionAlert">
+                                Course Completion Alerts
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="reminderNotif" checked>
+                            <label class="form-check-label" for="reminderNotif">
+                                Assignment Reminders
+                            </label>
+                        </div>
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="teamUpdates">
+                            <label class="form-check-label" for="teamUpdates">
+                                Team Updates
+                            </label>
+                        </div>
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="systemNotif">
+                            <label class="form-check-label" for="systemNotif">
+                                System Notifications
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-primary">Save Preferences</button>
+            </div>
+
+            <!-- Team Settings -->
+            <div class="form-section mb-4">
+                <h5 class="mb-3"><i class="fas fa-users-cog me-2"></i>Team Settings</h5>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Default Learning Hours/Week</label>
+                        <input type="number" class="form-control" value="8">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Assignment Deadline (Days)</label>
+                        <input type="number" class="form-control" value="14">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Reminder Frequency</label>
+                        <select class="form-select">
+                            <option>Daily</option>
+                            <option selected>Weekly</option>
+                            <option>Bi-weekly</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Auto-assign New Paths</label>
+                        <select class="form-select">
+                            <option>Enabled</option>
+                            <option selected>Disabled</option>
+                        </select>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-primary">Update Settings</button>
+            </div>
+
+            <!-- Security Settings -->
+            <div class="form-section">
+                <h5 class="mb-3"><i class="fas fa-shield-alt me-2"></i>Security Settings</h5>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Current Password</label>
+                        <input type="password" class="form-control">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">New Password</label>
+                        <input type="password" class="form-control">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Confirm New Password</label>
+                        <input type="password" class="form-control">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="form-check mt-4">
+                            <input class="form-check-input" type="checkbox" id="twoFactor">
+                            <label class="form-check-label" for="twoFactor">
+                                Enable Two-Factor Authentication
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-warning">Change Password</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function logout() {
+            alert("Logged out");
+            window.location.href = "login.html";
+        }
+
+        document.querySelectorAll('.sidebar-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                if (this.getAttribute('href') === '#') {
+                    e.preventDefault();
+                }
+            });
+        });
+
+        // Add form submission handlers
+        document.querySelectorAll('button[type="button"]').forEach(btn => {
+            if (btn.textContent.includes('Update') || btn.textContent.includes('Save') || btn.textContent.includes('Change')) {
+                btn.addEventListener('click', function() {
+                    alert('Settings updated successfully!');
+                });
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assign Learning Paths</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-brand">
+            <i class="fas fa-chart-line"></i> Manager Panel
+        </div>
+        <nav>
+            <a href="manager_dashboard.html" class="sidebar-item">
+                <i class="fas fa-tachometer-alt"></i> Dashboard
+            </a>
+            <a href="team_management.html" class="sidebar-item">
+                <i class="fas fa-users"></i> Team Management
+            </a>
+            <a href="assign_learning_path.html" class="sidebar-item active">
+                <i class="fas fa-route"></i> Learning Paths
+            </a>
+            <a href="weekly_hours.html" class="sidebar-item">
+                <i class="fas fa-clock"></i> Weekly Hours
+            </a>
+            <a href="reports.html" class="sidebar-item">
+                <i class="fas fa-chart-bar"></i> Reports
+            </a>
+            <a href="settings.html" class="sidebar-item">
+                <i class="fas fa-cog"></i> Settings
+            </a>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Top Navbar -->
+        <div class="top-navbar d-flex justify-content-between align-items-center">
+            <div>
+                <h5 class="mb-0"><i class="fas fa-users text-primary"></i> Team: Development Team</h5>
+            </div>
+            <div class="d-flex align-items-center">
+                <span class="me-3"><i class="fas fa-user-circle"></i> Manager Name</span>
+                <button class="btn btn-danger btn-logout" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </div>
+
+        <!-- Page Content -->
+        <div class="container-fluid">
+            <!-- Page Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>Assign Learning Paths</h2>
+                <div>
+                    <button class="btn btn-primary me-2">
+                        <i class="fas fa-plus"></i> Assign Learning Path
+                    </button>
+                    <button class="btn btn-light">
+                        <i class="fas fa-bell"></i> Send Reminder
+                    </button>
+                </div>
+            </div>
+
+            <!-- Assignment Form -->
+            <div class="form-section">
+                <form id="assignmentForm">
+                    <div class="row mb-4">
+                        <div class="col-md-4">
+                            <label class="form-label">Department</label>
+                            <select class="form-select">
+                                <option>Engineering</option>
+                                <option>Marketing</option>
+                                <option>Sales</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Team</label>
+                            <select class="form-select">
+                                <option>Development Team</option>
+                                <option>QA Team</option>
+                                <option>DevOps Team</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Employee</label>
+                            <select class="form-select">
+                                <option>All Team Members</option>
+                                <option>John Doe</option>
+                                <option>Jane Smith</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Learning Paths Selection -->
+                    <div class="mb-4">
+                        <h5 class="mb-3">Learning Paths</h5>
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <div class="learning-path-card" onclick="togglePath(this)">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <h6 class="mb-0">JavaScript Fundamentals</h6>
+                                        <i class="fas fa-check-circle text-success d-none"></i>
+                                    </div>
+                                    <p class="text-muted small mb-2">Learn core JavaScript concepts and ES6+ features</p>
+                                    <div class="d-flex justify-content-between">
+                                        <span class="badge bg-primary">4 hours</span>
+                                        <span class="badge bg-secondary">Beginner</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="learning-path-card" onclick="togglePath(this)">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <h6 class="mb-0">React Development</h6>
+                                        <i class="fas fa-check-circle text-success d-none"></i>
+                                    </div>
+                                    <p class="text-muted small mb-2">Build modern web applications with React</p>
+                                    <div class="d-flex justify-content-between">
+                                        <span class="badge bg-primary">6 hours</span>
+                                        <span class="badge bg-warning">Intermediate</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="learning-path-card" onclick="togglePath(this)">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <h6 class="mb-0">Node.js Backend</h6>
+                                        <i class="fas fa-check-circle text-success d-none"></i>
+                                    </div>
+                                    <p class="text-muted small mb-2">Server-side development with Node.js and Express</p>
+                                    <div class="d-flex justify-content-between">
+                                        <span class="badge bg-primary">8 hours</span>
+                                        <span class="badge bg-danger">Advanced</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Schedule Section -->
+                    <div class="mb-4">
+                        <h5 class="mb-3">Schedule</h5>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class="form-label">Start Date</label>
+                                <input type="date" class="form-control">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Due Date</label>
+                                <input type="date" class="form-control">
+                            </div>
+                            <div class="col-md-4 d-flex align-items-end">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="repeatWeekly">
+                                    <label class="form-check-label" for="repeatWeekly">
+                                        Repeat Weekly
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Summary Section -->
+            <div class="summary-card mb-4">
+                <h5 class="mb-3">Assignment Summary</h5>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="text-center">
+                            <h4 class="text-primary mb-1" id="assignedMembers">3</h4>
+                            <p class="text-muted mb-0">Assigned Team Members</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="text-center">
+                            <h4 class="text-success mb-1" id="chosenPaths">2</h4>
+                            <p class="text-muted mb-0">Chosen Learning Paths</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="text-center">
+                            <h4 class="text-warning mb-1" id="totalTime">12</h4>
+                            <p class="text-muted mb-0">Estimated Total Time (hours)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="text-end">
+                <button type="button" class="btn btn-light me-2">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+                <button type="button" class="btn btn-primary" onclick="assignPaths()">
+                    <i class="fas fa-check"></i> Assign Learning Paths
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let selectedPaths = 0;
+        const pathHours = { 0: 4, 1: 6, 2: 8 };
+
+        function logout() {
+            alert("Logged out");
+            window.location.href = "login.html";
+        }
+
+        function togglePath(card) {
+            const icon = card.querySelector('.fa-check-circle');
+            const isSelected = card.classList.contains('selected');
+            
+            if (isSelected) {
+                card.classList.remove('selected');
+                icon.classList.add('d-none');
+                selectedPaths--;
+            } else {
+                card.classList.add('selected');
+                icon.classList.remove('d-none');
+                selectedPaths++;
+            }
+            
+            updateSummary();
+        }
+
+        function updateSummary() {
+            document.getElementById('chosenPaths').textContent = selectedPaths;
+            
+            let totalHours = 0;
+            document.querySelectorAll('.learning-path-card.selected').forEach((card, index) => {
+                const hours = parseInt(card.querySelector('.badge.bg-primary').textContent);
+                totalHours += hours;
+            });
+            
+            document.getElementById('totalTime').textContent = totalHours;
+        }
+
+        function assignPaths() {
+            if (selectedPaths === 0) {
+                alert("Please select at least one learning path");
+                return;
+            }
+            alert(`Successfully assigned ${selectedPaths} learning path(s) to team members!`);
+        }
+
+        document.querySelectorAll('.sidebar-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                if (this.getAttribute('href') === '#') {
+                    e.preventDefault();
+                }
+                document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>

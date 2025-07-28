@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-brand">
+            <i class="fas fa-chart-line"></i> Manager Panel
+        </div>
+        <nav>
+            <a href="manager_dashboard.html" class="sidebar-item">
+                <i class="fas fa-tachometer-alt"></i> Dashboard
+            </a>
+            <a href="team_management.html" class="sidebar-item active">
+                <i class="fas fa-users"></i> Team Management
+            </a>
+            <a href="assign_learning_path.html" class="sidebar-item">
+                <i class="fas fa-route"></i> Learning Paths
+            </a>
+            <a href="weekly_hours.html" class="sidebar-item">
+                <i class="fas fa-clock"></i> Weekly Hours
+            </a>
+            <a href="reports.html" class="sidebar-item">
+                <i class="fas fa-chart-bar"></i> Reports
+            </a>
+            <a href="settings.html" class="sidebar-item">
+                <i class="fas fa-cog"></i> Settings
+            </a>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Top Navbar -->
+        <div class="top-navbar d-flex justify-content-between align-items-center">
+            <div>
+                <h5 class="mb-0"><i class="fas fa-users text-primary"></i> Team: Development Team</h5>
+            </div>
+            <div class="d-flex align-items-center">
+                <span class="me-3"><i class="fas fa-user-circle"></i> Manager Name</span>
+                <button class="btn btn-danger btn-logout" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </div>
+
+        <!-- Page Content -->
+        <div class="container-fluid">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>Team Management</h2>
+                <button class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Add Team Member
+                </button>
+            </div>
+
+            <!-- Team Stats -->
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="info-card text-center">
+                        <i class="fas fa-users card-icon text-primary mb-2"></i>
+                        <h3 class="text-primary">24</h3>
+                        <p class="text-muted mb-0">Total Members</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="info-card text-center">
+                        <i class="fas fa-user-check card-icon text-success mb-2"></i>
+                        <h3 class="text-success">22</h3>
+                        <p class="text-muted mb-0">Active</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="info-card text-center">
+                        <i class="fas fa-graduation-cap card-icon text-warning mb-2"></i>
+                        <h3 class="text-warning">18</h3>
+                        <p class="text-muted mb-0">In Training</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="info-card text-center">
+                        <i class="fas fa-trophy card-icon text-info mb-2"></i>
+                        <h3 class="text-info">15</h3>
+                        <p class="text-muted mb-0">Completed Paths</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Team Members Table -->
+            <div class="form-section">
+                <h5 class="mb-3">Team Members</h5>
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Department</th>
+                                <th>Status</th>
+                                <th>Progress</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><i class="fas fa-user-circle me-2"></i>John Doe</td>
+                                <td>Senior Developer</td>
+                                <td>Engineering</td>
+                                <td><span class="badge bg-success">Active</span></td>
+                                <td>
+                                    <div class="progress" style="height: 8px;">
+                                        <div class="progress-bar" style="width: 85%"></div>
+                                    </div>
+                                    <small class="text-muted">85%</small>
+                                </td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary me-1"><i class="fas fa-edit"></i></button>
+                                    <button class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><i class="fas fa-user-circle me-2"></i>Jane Smith</td>
+                                <td>Frontend Developer</td>
+                                <td>Engineering</td>
+                                <td><span class="badge bg-success">Active</span></td>
+                                <td>
+                                    <div class="progress" style="height: 8px;">
+                                        <div class="progress-bar" style="width: 92%"></div>
+                                    </div>
+                                    <small class="text-muted">92%</small>
+                                </td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary me-1"><i class="fas fa-edit"></i></button>
+                                    <button class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><i class="fas fa-user-circle me-2"></i>Mike Johnson</td>
+                                <td>Backend Developer</td>
+                                <td>Engineering</td>
+                                <td><span class="badge bg-warning">Training</span></td>
+                                <td>
+                                    <div class="progress" style="height: 8px;">
+                                        <div class="progress-bar" style="width: 67%"></div>
+                                    </div>
+                                    <small class="text-muted">67%</small>
+                                </td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary me-1"><i class="fas fa-edit"></i></button>
+                                    <button class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function logout() {
+            alert("Logged out");
+            window.location.href = "login.html";
+        }
+
+        document.querySelectorAll('.sidebar-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                if (this.getAttribute('href') === '#') {
+                    e.preventDefault();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
