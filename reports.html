@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="reportsApp">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Learning Path Tracker - Reports</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.3/angular.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      .gradient-bg {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      }
+      .card-hover {
+        transition: all 0.3s ease;
+      }
+      .card-hover:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+      }
+      .sidebar-item:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-50" ng-controller="ReportsController">
+    <div class="flex h-screen">
+      <!-- Sidebar -->
+      <div class="w-64 gradient-bg text-white shadow-xl">
+        <div class="p-6">
+          <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 bg-white rounded-lg flex items-center justify-center">
+              <i class="fas fa-graduation-cap text-purple-600 text-xl"></i>
+            </div>
+            <div>
+              <h1 class="text-xl font-bold">LearnTrack</h1>
+              <p class="text-sm opacity-80">Admin Panel</p>
+            </div>
+          </div>
+        </div>
+
+        <nav class="mt-8 px-4">
+          <div class="space-y-2">
+            <a href="dashboard.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 text-white hover:bg-white hover:bg-opacity-10 rounded-lg transition-all duration-200">
+              <i class="fas fa-tachometer-alt w-5"></i>
+              <span class="font-medium">Dashboard</span>
+            </a>
+            <a href="manageUsers.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 text-white hover:bg-white hover:bg-opacity-10 rounded-lg transition-all duration-200">
+              <i class="fas fa-users w-5"></i>
+              <span class="font-medium">Manage Users</span>
+            </a>
+            <a href="manage-courses.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 text-white hover:bg-white hover:bg-opacity-10 rounded-lg transition-all duration-200">
+              <i class="fas fa-book-open w-5"></i>
+              <span class="font-medium">Manage Courses</span>
+            </a>
+            <a href="learning-paths.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 text-white hover:bg-white hover:bg-opacity-10 rounded-lg transition-all duration-200">
+              <i class="fas fa-route w-5"></i>
+              <span class="font-medium">Learning Paths</span>
+            </a>
+            <a href="notifications.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 text-white hover:bg-white hover:bg-opacity-10 rounded-lg transition-all duration-200">
+              <i class="fas fa-bell w-5"></i>
+              <span class="font-medium">Send Notifications</span>
+            </a>
+            <a href="#" class="sidebar-item flex items-center space-x-3 px-4 py-3 text-white hover:bg-white hover:bg-opacity-10 rounded-lg transition-all duration-200 bg-white bg-opacity-20">
+              <i class="fas fa-chart-bar w-5"></i>
+              <span class="font-medium">Reports</span>
+            </a>
+            <a href="settings.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 text-white hover:bg-white hover:bg-opacity-10 rounded-lg transition-all duration-200">
+              <i class="fas fa-cog w-5"></i>
+              <span class="font-medium">Settings</span>
+            </a>
+          </div>
+        </nav>
+
+        <div class="absolute bottom-8 left-4 right-4">
+          <div class="flex items-center space-x-3 px-4 py-3 bg-white bg-opacity-10 rounded-lg">
+            <div class="w-8 h-8 bg-white rounded-full flex items-center justify-center">
+              <i class="fas fa-user text-purple-600"></i>
+            </div>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Admin User</p>
+              <p class="text-xs opacity-70">admin@company.com</p>
+            </div>
+            <i class="fas fa-sign-out-alt cursor-pointer hover:text-red-300 transition-colors"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="flex-1 flex flex-col overflow-hidden">
+        <!-- Header -->
+        <header class="bg-white shadow-sm border-b border-gray-200">
+          <div class="flex items-center justify-between px-8 py-4">
+            <div>
+              <h1 class="text-2xl font-bold text-gray-800">Reports & Analytics</h1>
+              <p class="text-gray-600">Track performance and generate insights</p>
+            </div>
+            <div class="flex items-center space-x-4">
+              <select ng-model="selectedPeriod" ng-change="updateReports()" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                <option value="7days">Last 7 Days</option>
+                <option value="30days">Last 30 Days</option>
+                <option value="90days">Last 90 Days</option>
+                <option value="1year">Last Year</option>
+              </select>
+              <button ng-click="exportReport()" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
+                <i class="fas fa-download mr-2"></i>Export Report
+              </button>
+            </div>
+          </div>
+        </header>
+
+        <!-- Reports Content -->
+        <main class="flex-1 overflow-y-auto p-8">
+          <!-- Key Metrics -->
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white p-6 rounded-xl shadow-lg card-hover">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-gray-600 text-sm font-medium">Course Completions</p>
+                  <p class="text-3xl font-bold text-green-600 mt-2">{{metrics.completions}}</p>
+                  <p class="text-xs text-green-600 mt-1">
+                    <i class="fas fa-arrow-up"></i> +{{metrics.completionsGrowth}}% vs last period
+                  </p>
+                </div>
+                <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                  <i class="fas fa-check-circle text-green-600 text-xl"></i>
+                </div>
+              </div>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-lg card-hover">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-gray-600 text-sm font-medium">Active Learners</p>
+                  <p class="text-3xl font-bold text-blue-600 mt-2">{{metrics.activeLearners}}</p>
+                  <p class="text-xs text-blue-600 mt-1">
+                    <i class="fas fa-arrow-up"></i> +{{metrics.learnersGrowth}}% vs last period
+                  </p>
+                </div>
+                <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                  <i class="fas fa-users text-blue-600 text-xl"></i>
+                </div>
+              </div>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-lg card-hover">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-gray-600 text-sm font-medium">Avg. Completion Time</p>
+                  <p class="text-3xl font-bold text-purple-600 mt-2">{{metrics.avgCompletionTime}}</p>
+                  <p class="text-xs text-red-600 mt-1">
+                    <i class="fas fa-arrow-down"></i> -{{metrics.timeImprovement}}% vs last period
+                  </p>
+                </div>
+                <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                  <i class="fas fa-clock text-purple-600 text-xl"></i>
+                </div>
+              </div>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-lg card-hover">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-gray-600 text-sm font-medium">Satisfaction Score</p>
+                  <p class="text-3xl font-bold text-orange-600 mt-2">{{metrics.satisfactionScore}}</p>
+                  <p class="text-xs text-orange-600 mt-1">
+                    <i class="fas fa-arrow-up"></i> +{{metrics.satisfactionGrowth}}% vs last period
+                  </p>
+                </div>
+                <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
+                  <i class="fas fa-star text-orange-600 text-xl"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Charts Section -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <!-- Learning Progress Chart -->
+            <div class="bg-white p-6 rounded-xl shadow-lg">
+              <h3 class="text-lg font-semibold text-gray-800 mb-4">Learning Progress Over Time</h3>
+              <div class="relative" style="height: 300px">
+                <canvas id="progressChart"></canvas>
+              </div>
+            </div>
+
+            <!-- Course Popularity Chart -->
+            <div class="bg-white p-6 rounded-xl shadow-lg">
+              <h3 class="text-lg font-semibold text-gray-800 mb-4">Most Popular Courses</h3>
+              <div class="relative" style="height: 300px">
+                <canvas id="popularityChart"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- Department Performance -->
+          <div class="bg-white p-6 rounded-xl shadow-lg mb-8">
+            <h3 class="text-lg font-semibold text-gray-800 mb-6">Department Performance</h3>
+            <div class="overflow-x-auto">
+              <table class="w-full">
+                <thead>
+                  <tr class="border-b border-gray-200">
+                    <th class="text-left py-3 px-4 font-medium text-gray-700">Department</th>
+                    <th class="text-left py-3 px-4 font-medium text-gray-700">Total Users</th>
+                    <th class="text-left py-3 px-4 font-medium text-gray-700">Active Learners</th>
+                    <th class="text-left py-3 px-4 font-medium text-gray-700">Completions</th>
+                    <th class="text-left py-3 px-4 font-medium text-gray-700">Avg. Score</th>
+                    <th class="text-left py-3 px-4 font-medium text-gray-700">Progress</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr ng-repeat="dept in departmentData" class="border-b border-gray-100 hover:bg-gray-50">
+                    <td class="py-3 px-4 font-medium text-gray-800">{{dept.name}}</td>
+                    <td class="py-3 px-4 text-gray-600">{{dept.totalUsers}}</td>
+                    <td class="py-3 px-4 text-gray-600">{{dept.activeUsers}}</td>
+                    <td class="py-3 px-4 text-gray-600">{{dept.completions}}</td>
+                    <td class="py-3 px-4 text-gray-600">{{dept.avgScore}}%</td>
+                    <td class="py-3 px-4">
+                      <div class="w-full bg-gray-200 rounded-full h-2">
+                        <div class="bg-purple-600 h-2 rounded-full" ng-style="{width: dept.progress + '%'}"></div>
+                      </div>
+                      <span class="text-xs text-gray-500 mt-1">{{dept.progress}}%</span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Top Performers -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Top Learners -->
+            <div class="bg-white p-6 rounded-xl shadow-lg">
+              <h3 class="text-lg font-semibold text-gray-800 mb-6">Top Learners</h3>
+              <div class="space-y-4">
+                <div ng-repeat="learner in topLearners" class="flex items-center space-x-4 p-3 hover:bg-gray-50 rounded-lg">
+                  <div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center font-bold text-purple-600">
+                    {{$index + 1}}
+                  </div>
+                  <img ng-src="{{learner.avatar}}" alt="{{learner.name}}" class="w-10 h-10 rounded-full" />
+                  <div class="flex-1">
+                    <p class="font-medium text-gray-800">{{learner.name}}</p>
+                    <p class="text-sm text-gray-600">{{learner.department}}</p>
+                  </div>
+                  <div class="text-right">
+                    <p class="font-bold text-purple-600">{{learner.completions}}</p>
+                    <p class="text-xs text-gray-500">completions</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Course Ratings -->
+            <div class="bg-white p-6 rounded-xl shadow-lg">
+              <h3 class="text-lg font-semibold text-gray-800 mb-6">Course Ratings</h3>
+              <div class="space-y-4">
+                <div ng-repeat="course in courseRatings" class="flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg">
+                  <div class="flex-1">
+                    <p class="font-medium text-gray-800">{{course.title}}</p>
+                    <p class="text-sm text-gray-600">{{course.enrollments}} enrollments</p>
+                  </div>
+                  <div class="flex items-center space-x-2">
+                    <div class="flex items-center">
+                      <i class="fas fa-star text-yellow-400"></i>
+                      <span class="ml-1 font-bold text-gray-800">{{course.rating}}</span>
+                    </div>
+                    <div class="w-20 bg-gray-200 rounded-full h-2">
+                      <div class="bg-yellow-400 h-2 rounded-full" ng-style="{width: (course.rating / 5 * 100) + '%'}"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <script>
+      var app = angular.module("reportsApp", []);
+
+      app.controller("ReportsController", function ($scope) {
+        $scope.selectedPeriod = "30days";
+
+        $scope.metrics = {
+          completions: 1156,
+          completionsGrowth: 15,
+          activeLearners: 892,
+          learnersGrowth: 8,
+          avgCompletionTime: "2.3w",
+          timeImprovement: 12,
+          satisfactionScore: 4.6,
+          satisfactionGrowth: 5
+        };
+
+        $scope.departmentData = [
+          {
+            name: "Engineering",
+            totalUsers: 245,
+            activeUsers: 198,
+            completions: 456,
+            avgScore: 87,
+            progress: 81
+          },
+          {
+            name: "Marketing",
+            totalUsers: 156,
+            activeUsers: 134,
+            completions: 298,
+            avgScore: 92,
+            progress: 86
+          },
+          {
+            name: "Sales",
+            totalUsers: 189,
+            activeUsers: 167,
+            completions: 334,
+            avgScore: 89,
+            progress: 88
+          },
+          {
+            name: "HR",
+            totalUsers: 78,
+            activeUsers: 65,
+            completions: 145,
+            avgScore: 94,
+            progress: 83
+          },
+          {
+            name: "Operations",
+            totalUsers: 123,
+            activeUsers: 98,
+            completions: 187,
+            avgScore: 85,
+            progress: 80
+          }
+        ];
+
+        $scope.topLearners = [
+          {
+            name: "Sarah Johnson",
+            department: "Engineering",
+            completions: 24,
+            avatar: "https://randomuser.me/api/portraits/women/1.jpg"
+          },
+          {
+            name: "Mike Chen",
+            department: "Marketing",
+            completions: 22,
+            avatar: "https://randomuser.me/api/portraits/men/1.jpg"
+          },
+          {
+            name: "Emily Davis",
+            department: "Sales",
+            completions: 20,
+            avatar: "https://randomuser.me/api/portraits/women/2.jpg"
+          },
+          {
+            name: "David Wilson",
+            department: "Engineering",
+            completions: 19,
+            avatar: "https://randomuser.me/api/portraits/men/2.jpg"
+          },
+          {
+            name: "Lisa Brown",
+            department: "HR",
+            completions: 18,
+            avatar: "https://randomuser.me/api/portraits/women/3.jpg"
+          }
+        ];
+
+        $scope.courseRatings = [
+          {
+            title: "Advanced JavaScript",
+            enrollments: 234,
+            rating: 4.8
+          },
+          {
+            title: "UI/UX Design Fundamentals",
+            enrollments: 189,
+            rating: 4.6
+          },
+          {
+            title: "Data Science Basics",
+            enrollments: 156,
+            rating: 4.7
+          },
+          {
+            title: "Project Management",
+            enrollments: 145,
+            rating: 4.5
+          },
+          {
+            title: "Digital Marketing",
+            enrollments: 123,
+            rating: 4.4
+          }
+        ];
+
+        $scope.updateReports = function () {
+          // Update metrics based on selected period
+          console.log("Updating reports for period:", $scope.selectedPeriod);
+        };
+
+        $scope.exportReport = function () {
+          alert("Exporting report for " + $scope.selectedPeriod + "...");
+        };
+
+        // Initialize charts when DOM is ready
+        document.addEventListener("DOMContentLoaded", function () {
+          setTimeout(function () {
+            initializeCharts();
+          }, 1000);
+        });
+
+        function initializeCharts() {
+          // Progress Chart
+          const progressCtx = document.getElementById("progressChart");
+          if (progressCtx) {
+            new Chart(progressCtx, {
+              type: "line",
+              data: {
+                labels: ["Week 1", "Week 2", "Week 3", "Week 4"],
+                datasets: [
+                  {
+                    label: "Course Completions",
+                    data: [85, 92, 78, 96],
+                    borderColor: "rgb(99, 102, 241)",
+                    backgroundColor: "rgba(99, 102, 241, 0.1)",
+                    tension: 0.4,
+                    fill: true
+                  },
+                  {
+                    label: "New Enrollments",
+                    data: [45, 52, 38, 61],
+                    borderColor: "rgb(34, 197, 94)",
+                    backgroundColor: "rgba(34, 197, 94, 0.1)",
+                    tension: 0.4,
+                    fill: true
+                  }
+                ]
+              },
+              options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                  legend: {
+                    position: "bottom"
+                  }
+                },
+                scales: {
+                  y: {
+                    beginAtZero: true
+                  }
+                }
+              }
+            });
+          }
+
+          // Popularity Chart
+          const popularityCtx = document.getElementById("popularityChart");
+          if (popularityCtx) {
+            new Chart(popularityCtx, {
+              type: "doughnut",
+              data: {
+                labels: ["JavaScript", "UI/UX Design", "Data Science", "Marketing", "Others"],
+                datasets: [
+                  {
+                    data: [234, 189, 156, 123, 98],
+                    backgroundColor: [
+                      "#6366f1",
+                      "#22c55e",
+                      "#f59e0b",
+                      "#ef4444",
+                      "#8b5cf6"
+                    ]
+                  }
+                ]
+              },
+              options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                  legend: {
+                    position: "bottom"
+                  }
+                }
+              }
+            });
+          }
+        }
+      });
+    </script>
+  </body>
+</html>

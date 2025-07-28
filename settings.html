@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="settingsApp">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Learning Path Tracker - Settings</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.3/angular.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      .gradient-bg {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      }
+      .card-hover {
+        transition: all 0.3s ease;
+      }
+      .card-hover:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+      }
+      .sidebar-item:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+      }
+      .settings-tab {
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+      .settings-tab.active {
+        background: #f3f4f6;
+        border-right: 3px solid #6366f1;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-50" ng-controller="SettingsController">
+    <div class="flex h-screen">
+      <!-- Sidebar -->
+      <div class="w-64 gradient-bg text-white shadow-xl">
+        <div class="p-6">
+          <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 bg-white rounded-lg flex items-center justify-center">
+              <i class="fas fa-graduation-cap text-purple-600 text-xl"></i>
+            </div>
+            <div>
+              <h1 class="text-xl font-bold">LearnTrack</h1>
+              <p class="text-sm opacity-80">Admin Panel</p>
+            </div>
+          </div>
+        </div>
+
+        <nav class="mt-8 px-4">
+          <div class="space-y-2">
+            <a href="dashboard.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 text-white hover:bg-white hover:bg-opacity-10 rounded-lg transition-all duration-200">
+              <i class="fas fa-tachometer-alt w-5"></i>
+              <span class="font-medium">Dashboard</span>
+            </a>
+            <a href="manageUsers.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 text-white hover:bg-white hover:bg-opacity-10 rounded-lg transition-all duration-200">
+              <i class="fas fa-users w-5"></i>
+              <span class="font-medium">Manage Users</span>
+            </a>
+            <a href="manage-courses.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 text-white hover:bg-white hover:bg-opacity-10 rounded-lg transition-all duration-200">
+              <i class="fas fa-book-open w-5"></i>
+              <span class="font-medium">Manage Courses</span>
+            </a>
+            <a href="learning-paths.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 text-white hover:bg-white hover:bg-opacity-10 rounded-lg transition-all duration-200">
+              <i class="fas fa-route w-5"></i>
+              <span class="font-medium">Learning Paths</span>
+            </a>
+            <a href="notifications.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 text-white hover:bg-white hover:bg-opacity-10 rounded-lg transition-all duration-200">
+              <i class="fas fa-bell w-5"></i>
+              <span class="font-medium">Send Notifications</span>
+            </a>
+            <a href="reports.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 text-white hover:bg-white hover:bg-opacity-10 rounded-lg transition-all duration-200">
+              <i class="fas fa-chart-bar w-5"></i>
+              <span class="font-medium">Reports</span>
+            </a>
+            <a href="#" class="sidebar-item flex items-center space-x-3 px-4 py-3 text-white hover:bg-white hover:bg-opacity-10 rounded-lg transition-all duration-200 bg-white bg-opacity-20">
+              <i class="fas fa-cog w-5"></i>
+              <span class="font-medium">Settings</span>
+            </a>
+          </div>
+        </nav>
+
+        <div class="absolute bottom-8 left-4 right-4">
+          <div class="flex items-center space-x-3 px-4 py-3 bg-white bg-opacity-10 rounded-lg">
+            <div class="w-8 h-8 bg-white rounded-full flex items-center justify-center">
+              <i class="fas fa-user text-purple-600"></i>
+            </div>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Admin User</p>
+              <p class="text-xs opacity-70">admin@company.com</p>
+            </div>
+            <i class="fas fa-sign-out-alt cursor-pointer hover:text-red-300 transition-colors"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="flex-1 flex flex-col overflow-hidden">
+        <!-- Header -->
+        <header class="bg-white shadow-sm border-b border-gray-200">
+          <div class="flex items-center justify-between px-8 py-4">
+            <div>
+              <h1 class="text-2xl font-bold text-gray-800">Settings</h1>
+              <p class="text-gray-600">Configure your learning platform</p>
+            </div>
+          </div>
+        </header>
+
+        <!-- Settings Content -->
+        <main class="flex-1 overflow-hidden">
+          <div class="flex h-full">
+            <!-- Settings Navigation -->
+            <div class="w-64 bg-white border-r border-gray-200 overflow-y-auto">
+              <div class="p-4">
+                <div class="space-y-1">
+                  <div ng-click="activeTab = 'general'" ng-class="{'active': activeTab === 'general'}" class="settings-tab flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg">
+                    <i class="fas fa-cog w-5"></i>
+                    <span class="font-medium">General</span>
+                  </div>
+                  <div ng-click="activeTab = 'notifications'" ng-class="{'active': activeTab === 'notifications'}" class="settings-tab flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg">
+                    <i class="fas fa-bell w-5"></i>
+                    <span class="font-medium">Notifications</span>
+                  </div>
+                  <div ng-click="activeTab = 'security'" ng-class="{'active': activeTab === 'security'}" class="settings-tab flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg">
+                    <i class="fas fa-shield-alt w-5"></i>
+                    <span class="font-medium">Security</span>
+                  </div>
+                  <div ng-click="activeTab = 'integrations'" ng-class="{'active': activeTab === 'integrations'}" class="settings-tab flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg">
+                    <i class="fas fa-plug w-5"></i>
+                    <span class="font-medium">Integrations</span>
+                  </div>
+                  <div ng-click="activeTab = 'appearance'" ng-class="{'active': activeTab === 'appearance'}" class="settings-tab flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg">
+                    <i class="fas fa-palette w-5"></i>
+                    <span class="font-medium">Appearance</span>
+                  </div>
+                  <div ng-click="activeTab = 'backup'" ng-class="{'active': activeTab === 'backup'}" class="settings-tab flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg">
+                    <i class="fas fa-database w-5"></i>
+                    <span class="font-medium">Backup & Data</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Settings Content Area -->
+            <div class="flex-1 overflow-y-auto p-8">
+              <!-- General Settings -->
+              <div ng-show="activeTab === 'general'" class="space-y-6">
+                <div class="bg-white p-6 rounded-xl shadow-lg">
+                  <h3 class="text-lg font-semibold text-gray-800 mb-4">Platform Information</h3>
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label class="block text-sm font-medium text-gray-700 mb-1">Platform Name</label>
+                      <input type="text" ng-model="settings.general.platformName" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent" />
+                    </div>
+                    <div>
+                      <label class="block text-sm font-medium text-gray-700 mb-1">Company Name</label>
+                      <input type="text" ng-model="settings.general.companyName" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent" />
+                    </div>
+                    <div class="md:col-span-2">
+                      <label class="block text-sm font-medium text-gray-700 mb-1">Platform Description</label>
+                      <textarea ng-model="settings.general.description" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"></textarea>
+                    </div>
+                    <div>
+                      <label class="block text-sm font-medium text-gray-700 mb-1">Time Zone</label>
+                      <select ng-model="settings.general.timezone" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                        <option value="UTC">UTC</option>
+                        <option value="EST">Eastern Time</option>
+                        <option value="PST">Pacific Time</option>
+                        <option value="GMT">Greenwich Mean Time</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label class="block text-sm font-medium text-gray-700 mb-1">Language</label>
+                      <select ng-model="settings.general.language" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                        <option value="en">English</option>
+                        <option value="es">Spanish</option>
+                        <option value="fr">French</option>
+                        <option value="de">German</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-lg">
+                  <h3 class="text-lg font-semibold text-gray-800 mb-4">Course Settings</h3>
+                  <div class="space-y-4">
+                    <div class="flex items-center justify-between">
+                      <div>
+                        <p class="font-medium text-gray-800">Auto-enroll new users</p>
+                        <p class="text-sm text-gray-600">Automatically enroll new users in default courses</p>
+                      </div>
+                      <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" ng-model="settings.general.autoEnroll" class="sr-only peer" />
+                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
+                      </label>
+                    </div>
+                    <div class="flex items-center justify-between">
+                      <div>
+                        <p class="font-medium text-gray-800">Course completion certificates</p>
+                        <p class="text-sm text-gray-600">Generate certificates upon course completion</p>
+                      </div>
+                      <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" ng-model="settings.general.certificates" class="sr-only peer" />
+                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Notification Settings -->
+              <div ng-show="activeTab === 'notifications'" class="space-y-6">
+                <div class="bg-white p-6 rounded-xl shadow-lg">
+                  <h3 class="text-lg font-semibold text-gray-800 mb-4">Email Notifications</h3>
+                  <div class="space-y-4">
+                    <div class="flex items-center justify-between">
+                      <div>
+                        <p class="font-medium text-gray-800">Course reminders</p>
+                        <p class="text-sm text-gray-600">Send email reminders for pending courses</p>
+                      </div>
+                      <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" ng-model="settings.notifications.courseReminders" class="sr-only peer" />
+                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
+                      </label>
+                    </div>
+                    <div class="flex items-center justify-between">
+                      <div>
+                        <p class="font-medium text-gray-800">Achievement notifications</p>
+                        <p class="text-sm text-gray-600">Notify users when they complete courses or earn certificates</p>
+                      </div>
+                      <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" ng-model="settings.notifications.achievements" class="sr-only peer" />
+                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
+                      </label>
+                    </div>
+                    <div class="flex items-center justify-between">
+                      <div>
+                        <p class="font-medium text-gray-800">Weekly digest</p>
+                        <p class="text-sm text-gray-600">Send weekly progress summaries to users</p>
+                      </div>
+                      <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" ng-model="settings.notifications.weeklyDigest" class="sr-only peer" />
+                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-lg">
+                  <h3 class="text-lg font-semibold text-gray-800 mb-4">Email Configuration</h3>
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label class="block text-sm font-medium text-gray-700 mb-1">SMTP Server</label>
+                      <input type="text" ng-model="settings.notifications.smtpServer" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent" />
+                    </div>
+                    <div>
+                      <label class="block text-sm font-medium text-gray-700 mb-1">SMTP Port</label>
+                      <input type="number" ng-model="settings.notifications.smtpPort" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent" />
+                    </div>
+                    <div>
+                      <label class="block text-sm font-medium text-gray-700 mb-1">From Email</label>
+                      <input type="email" ng-model="settings.notifications.fromEmail" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent" />
+                    </div>
+                    <div>
+                      <label class="block text-sm font-medium text-gray-700 mb-1">From Name</label>
+                      <input type="text" ng-model="settings.notifications.fromName" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Security Settings -->
+              <div ng-show="activeTab === 'security'" class="space-y-6">
+                <div class="bg-white p-6 rounded-xl shadow-lg">
+                  <h3 class="text-lg font-semibold text-gray-800 mb-4">Password Policy</h3>
+                  <div class="space-y-4">
+                    <div>
+                      <label class="block text-sm font-medium text-gray-700 mb-1">Minimum Password Length</label>
+                      <input type="number" ng-model="settings.security.minPasswordLength" min="6" max="20" class="w-32 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent" />
+                    </div>
+                    <div class="flex items-center justify-between">
+                      <div>
+                        <p class="font-medium text-gray-800">Require uppercase letters</p>
+                        <p class="text-sm text-gray-600">Passwords must contain at least one uppercase letter</p>
+                      </div>
+                      <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" ng-model="settings.security.requireUppercase" class="sr-only peer" />
+                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
+                      </label>
+                    </div>
+                    <div class="flex items-center justify-between">
+                      <div>
+                        <p class="font-medium text-gray-800">Require special characters</p>
+                        <p class="text-sm text-gray-600">Passwords must contain at least one special character</p>
+                      </div>
+                      <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" ng-model="settings.security.requireSpecialChars" class="sr-only peer" />
+                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-lg">
+                  <h3 class="text-lg font-semibold text-gray-800 mb-4">Session Management</h3>
+                  <div class="space-y-4">
+                    <div>
+                      <label class="block text-sm font-medium text-gray-700 mb-1">Session Timeout (minutes)</label>
+                      <input type="number" ng-model="settings.security.sessionTimeout" min="15" max="480" class="w-32 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent" />
+                    </div>
+                    <div class="flex items-center justify-between">
+                      <div>
+                        <p class="font-medium text-gray-800">Two-factor authentication</p>
+                        <p class="text-sm text-gray-600">Require 2FA for admin accounts</p>
+                      </div>
+                      <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" ng-model="settings.security.twoFactorAuth" class="sr-only peer" />
+                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Other tabs content would go here -->
+              <div ng-show="activeTab === 'integrations'" class="bg-white p-6 rounded-xl shadow-lg">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">Third-party Integrations</h3>
+                <p class="text-gray-600">Integration settings will be available in future updates.</p>
+              </div>
+
+              <div ng-show="activeTab === 'appearance'" class="bg-white p-6 rounded-xl shadow-lg">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">Platform Appearance</h3>
+                <p class="text-gray-600">Appearance customization options will be available in future updates.</p>
+              </div>
+
+              <div ng-show="activeTab === 'backup'" class="bg-white p-6 rounded-xl shadow-lg">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">Backup & Data Management</h3>
+                <p class="text-gray-600">Backup and data management features will be available in future updates.</p>
+              </div>
+
+              <!-- Save Button -->
+              <div class="mt-8 flex justify-end">
+                <button ng-click="saveSettings()" class="px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
+                  <i class="fas fa-save mr-2"></i>Save Settings
+                </button>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <script>
+      var app = angular.module("settingsApp", []);
+
+      app.controller("SettingsController", function ($scope) {
+        $scope.activeTab = "general";
+
+        $scope.settings = {
+          general: {
+            platformName: "LearnTrack",
+            companyName: "Your Company",
+            description: "A comprehensive learning management system for employee development",
+            timezone: "UTC",
+            language: "en",
+            autoEnroll: true,
+            certificates: true
+          },
+          notifications: {
+            courseReminders: true,
+            achievements: true,
+            weeklyDigest: false,
+            smtpServer: "smtp.gmail.com",
+            smtpPort: 587,
+            fromEmail: "noreply@yourcompany.com",
+            fromName: "LearnTrack"
+          },
+          security: {
+            minPasswordLength: 8,
+            requireUppercase: true,
+            requireSpecialChars: true,
+            sessionTimeout: 60,
+            twoFactorAuth: false
+          }
+        };
+
+        $scope.saveSettings = function () {
+          // In a real application, this would save to a backend
+          alert("Settings saved successfully!");
+        };
+      });
+    </script>
+  </body>
+</html>

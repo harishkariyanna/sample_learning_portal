@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="learningPathsApp">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Learning Path Tracker - Learning Paths</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.3/angular.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      .gradient-bg {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      }
+      .card-hover {
+        transition: all 0.3s ease;
+      }
+      .card-hover:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+      }
+      .sidebar-item:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+      }
+      .path-step {
+        position: relative;
+      }
+      .path-step:not(:last-child)::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        right: -20px;
+        width: 40px;
+        height: 2px;
+        background: #e5e7eb;
+        z-index: 1;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-50" ng-controller="LearningPathsController">
+    <div class="flex h-screen">
+      <!-- Sidebar -->
+      <div class="w-64 gradient-bg text-white shadow-xl">
+        <div class="p-6">
+          <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 bg-white rounded-lg flex items-center justify-center">
+              <i class="fas fa-graduation-cap text-purple-600 text-xl"></i>
+            </div>
+            <div>
+              <h1 class="text-xl font-bold">LearnTrack</h1>
+              <p class="text-sm opacity-80">Admin Panel</p>
+            </div>
+          </div>
+        </div>
+
+        <nav class="mt-8 px-4">
+          <div class="space-y-2">
+            <a href="dashboard.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 text-white hover:bg-white hover:bg-opacity-10 rounded-lg transition-all duration-200">
+              <i class="fas fa-tachometer-alt w-5"></i>
+              <span class="font-medium">Dashboard</span>
+            </a>
+            <a href="manageUsers.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 text-white hover:bg-white hover:bg-opacity-10 rounded-lg transition-all duration-200">
+              <i class="fas fa-users w-5"></i>
+              <span class="font-medium">Manage Users</span>
+            </a>
+            <a href="manage-courses.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 text-white hover:bg-white hover:bg-opacity-10 rounded-lg transition-all duration-200">
+              <i class="fas fa-book-open w-5"></i>
+              <span class="font-medium">Manage Courses</span>
+            </a>
+            <a href="#" class="sidebar-item flex items-center space-x-3 px-4 py-3 text-white hover:bg-white hover:bg-opacity-10 rounded-lg transition-all duration-200 bg-white bg-opacity-20">
+              <i class="fas fa-route w-5"></i>
+              <span class="font-medium">Learning Paths</span>
+            </a>
+            <a href="notifications.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 text-white hover:bg-white hover:bg-opacity-10 rounded-lg transition-all duration-200">
+              <i class="fas fa-bell w-5"></i>
+              <span class="font-medium">Send Notifications</span>
+            </a>
+            <a href="reports.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 text-white hover:bg-white hover:bg-opacity-10 rounded-lg transition-all duration-200">
+              <i class="fas fa-chart-bar w-5"></i>
+              <span class="font-medium">Reports</span>
+            </a>
+            <a href="settings.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 text-white hover:bg-white hover:bg-opacity-10 rounded-lg transition-all duration-200">
+              <i class="fas fa-cog w-5"></i>
+              <span class="font-medium">Settings</span>
+            </a>
+          </div>
+        </nav>
+
+        <div class="absolute bottom-8 left-4 right-4">
+          <div class="flex items-center space-x-3 px-4 py-3 bg-white bg-opacity-10 rounded-lg">
+            <div class="w-8 h-8 bg-white rounded-full flex items-center justify-center">
+              <i class="fas fa-user text-purple-600"></i>
+            </div>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Admin User</p>
+              <p class="text-xs opacity-70">admin@company.com</p>
+            </div>
+            <i class="fas fa-sign-out-alt cursor-pointer hover:text-red-300 transition-colors"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="flex-1 flex flex-col overflow-hidden">
+        <!-- Header -->
+        <header class="bg-white shadow-sm border-b border-gray-200">
+          <div class="flex items-center justify-between px-8 py-4">
+            <div>
+              <h1 class="text-2xl font-bold text-gray-800">Learning Paths</h1>
+              <p class="text-gray-600">Create and manage structured learning journeys</p>
+            </div>
+            <div class="flex items-center space-x-4">
+              <button ng-click="showAddPathModal = true" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
+                <i class="fas fa-plus mr-2"></i>Create Learning Path
+              </button>
+            </div>
+          </div>
+        </header>
+
+        <!-- Learning Paths Content -->
+        <main class="flex-1 overflow-y-auto p-8">
+          <!-- Path Stats -->
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white p-6 rounded-xl shadow-lg card-hover">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-gray-600 text-sm font-medium">Total Paths</p>
+                  <p class="text-3xl font-bold text-gray-800 mt-2">{{pathStats.total}}</p>
+                </div>
+                <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                  <i class="fas fa-route text-blue-600 text-xl"></i>
+                </div>
+              </div>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-lg card-hover">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-gray-600 text-sm font-medium">Active Paths</p>
+                  <p class="text-3xl font-bold text-green-600 mt-2">{{pathStats.active}}</p>
+                </div>
+                <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                  <i class="fas fa-play-circle text-green-600 text-xl"></i>
+                </div>
+              </div>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-lg card-hover">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-gray-600 text-sm font-medium">Enrollments</p>
+                  <p class="text-3xl font-bold text-purple-600 mt-2">{{pathStats.enrollments}}</p>
+                </div>
+                <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                  <i class="fas fa-users text-purple-600 text-xl"></i>
+                </div>
+              </div>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-lg card-hover">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-gray-600 text-sm font-medium">Completions</p>
+                  <p class="text-3xl font-bold text-orange-600 mt-2">{{pathStats.completions}}</p>
+                </div>
+                <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
+                  <i class="fas fa-trophy text-orange-600 text-xl"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Filters -->
+          <div class="bg-white p-6 rounded-xl shadow-lg mb-8">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
+              <div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
+                <div class="relative">
+                  <input type="text" ng-model="searchQuery" placeholder="Search learning paths..." class="w-full md:w-80 px-4 py-2 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent" />
+                  <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                </div>
+                <select ng-model="statusFilter" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                  <option value="">All Status</option>
+                  <option value="active">Active</option>
+                  <option value="draft">Draft</option>
+                  <option value="archived">Archived</option>
+                </select>
+                <select ng-model="difficultyFilter" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                  <option value="">All Levels</option>
+                  <option value="beginner">Beginner</option>
+                  <option value="intermediate">Intermediate</option>
+                  <option value="advanced">Advanced</option>
+                </select>
+              </div>
+              <button ng-click="clearFilters()" class="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                Clear Filters
+              </button>
+            </div>
+          </div>
+
+          <!-- Learning Paths List -->
+          <div class="space-y-6">
+            <div ng-repeat="path in learningPaths | filter:searchQuery | filter:filterByStatus | filter:filterByDifficulty" class="bg-white rounded-xl shadow-lg overflow-hidden card-hover">
+              <div class="p-6">
+                <div class="flex items-start justify-between mb-4">
+                  <div class="flex-1">
+                    <div class="flex items-center space-x-3 mb-2">
+                      <h3 class="text-xl font-semibold text-gray-800">{{path.title}}</h3>
+                      <span ng-class="getStatusClass(path.status)" class="px-2 py-1 text-xs font-medium rounded-full">
+                        {{path.status | capitalize}}
+                      </span>
+                      <span ng-class="getDifficultyClass(path.difficulty)" class="px-2 py-1 text-xs font-medium rounded-full">
+                        {{path.difficulty | capitalize}}
+                      </span>
+                    </div>
+                    <p class="text-gray-600 mb-4">{{path.description}}</p>
+                    <div class="flex items-center space-x-6 text-sm text-gray-500">
+                      <div class="flex items-center space-x-1">
+                        <i class="fas fa-clock"></i>
+                        <span>{{path.duration}}</span>
+                      </div>
+                      <div class="flex items-center space-x-1">
+                        <i class="fas fa-users"></i>
+                        <span>{{path.enrollments}} enrolled</span>
+                      </div>
+                      <div class="flex items-center space-x-1">
+                        <i class="fas fa-book-open"></i>
+                        <span>{{path.courses.length}} courses</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="flex space-x-2">
+                    <button ng-click="viewPath(path)" class="p-2 text-gray-600 hover:text-blue-600 transition-colors">
+                      <i class="fas fa-eye"></i>
+                    </button>
+                    <button ng-click="editPath(path)" class="p-2 text-gray-600 hover:text-green-600 transition-colors">
+                      <i class="fas fa-edit"></i>
+                    </button>
+                    <button ng-click="deletePath(path)" class="p-2 text-gray-600 hover:text-red-600 transition-colors">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Course Steps -->
+                <div class="border-t pt-4">
+                  <h4 class="text-sm font-medium text-gray-700 mb-3">Learning Path Steps:</h4>
+                  <div class="flex flex-wrap items-center gap-4">
+                    <div ng-repeat="course in path.courses" class="path-step flex items-center space-x-2 bg-gray-50 px-3 py-2 rounded-lg">
+                      <div class="w-6 h-6 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center text-xs font-medium">
+                        {{$index + 1}}
+                      </div>
+                      <span class="text-sm text-gray-700">{{course.title}}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <!-- Add Learning Path Modal -->
+    <div ng-show="showAddPathModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div class="bg-white rounded-xl shadow-2xl w-full max-w-3xl mx-4 max-h-screen overflow-y-auto">
+        <div class="p-6 border-b border-gray-200">
+          <div class="flex items-center justify-between">
+            <h2 class="text-xl font-semibold text-gray-800">Create Learning Path</h2>
+            <button ng-click="showAddPathModal = false" class="text-gray-400 hover:text-gray-600">
+              <i class="fas fa-times text-xl"></i>
+            </button>
+          </div>
+        </div>
+        <form ng-submit="addNewPath()" class="p-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="md:col-span-2">
+              <label class="block text-sm font-medium text-gray-700 mb-1">Path Title</label>
+              <input type="text" ng-model="newPath.title" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent" />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Difficulty Level</label>
+              <select ng-model="newPath.difficulty" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                <option value="">Select Level</option>
+                <option value="beginner">Beginner</option>
+                <option value="intermediate">Intermediate</option>
+                <option value="advanced">Advanced</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Duration</label>
+              <input type="text" ng-model="newPath.duration" placeholder="e.g., 12 weeks" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent" />
+            </div>
+            <div class="md:col-span-2">
+              <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+              <textarea ng-model="newPath.description" rows="4" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"></textarea>
+            </div>
+            <div class="md:col-span-2">
+              <label class="block text-sm font-medium text-gray-700 mb-1">Select Courses (in order)</label>
+              <div class="space-y-2 max-h-40 overflow-y-auto border border-gray-300 rounded-lg p-3">
+                <div ng-repeat="course in availableCourses" class="flex items-center space-x-2">
+                  <input type="checkbox" ng-model="course.selected" ng-change="updateSelectedCourses()" class="rounded border-gray-300 text-purple-600 focus:ring-purple-500" />
+                  <label class="text-sm text-gray-700">{{course.title}}</label>
+                </div>
+              </div>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+              <select ng-model="newPath.status" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                <option value="draft">Draft</option>
+                <option value="active">Active</option>
+              </select>
+            </div>
+          </div>
+          <div class="flex items-center justify-end space-x-3 mt-6">
+            <button type="button" ng-click="showAddPathModal = false" class="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+              Cancel
+            </button>
+            <button type="submit" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
+              Create Path
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      var app = angular.module("learningPathsApp", []);
+
+      app.filter("capitalize", function () {
+        return function (input) {
+          return input ? input.charAt(0).toUpperCase() + input.slice(1) : "";
+        };
+      });
+
+      app.controller("LearningPathsController", function ($scope) {
+        $scope.pathStats = {
+          total: 24,
+          active: 18,
+          enrollments: 892,
+          completions: 156
+        };
+
+        $scope.searchQuery = "";
+        $scope.statusFilter = "";
+        $scope.difficultyFilter = "";
+        $scope.showAddPathModal = false;
+
+        $scope.learningPaths = [
+          {
+            id: 1,
+            title: "Full Stack Web Development",
+            description: "Complete journey from frontend to backend development with modern technologies.",
+            difficulty: "intermediate",
+            status: "active",
+            duration: "16 weeks",
+            enrollments: 234,
+            courses: [
+              { title: "HTML & CSS Fundamentals" },
+              { title: "JavaScript Essentials" },
+              { title: "React Development" },
+              { title: "Node.js Backend" },
+              { title: "Database Design" }
+            ]
+          },
+          {
+            id: 2,
+            title: "Data Science Fundamentals",
+            description: "Learn data analysis, visualization, and machine learning basics.",
+            difficulty: "beginner",
+            status: "active",
+            duration: "12 weeks",
+            enrollments: 189,
+            courses: [
+              { title: "Python for Data Science" },
+              { title: "Statistics Basics" },
+              { title: "Data Visualization" },
+              { title: "Machine Learning Intro" }
+            ]
+          },
+          {
+            id: 3,
+            title: "Advanced DevOps Engineering",
+            description: "Master containerization, orchestration, and CI/CD pipelines.",
+            difficulty: "advanced",
+            status: "draft",
+            duration: "20 weeks",
+            enrollments: 0,
+            courses: [
+              { title: "Docker Mastery" },
+              { title: "Kubernetes Administration" },
+              { title: "CI/CD with Jenkins" },
+              { title: "Infrastructure as Code" },
+              { title: "Monitoring & Logging" }
+            ]
+          }
+        ];
+
+        $scope.availableCourses = [
+          { id: 1, title: "HTML & CSS Fundamentals", selected: false },
+          { id: 2, title: "JavaScript Essentials", selected: false },
+          { id: 3, title: "React Development", selected: false },
+          { id: 4, title: "Node.js Backend", selected: false },
+          { id: 5, title: "Python for Data Science", selected: false },
+          { id: 6, title: "Machine Learning Intro", selected: false }
+        ];
+
+        $scope.newPath = {
+          title: "",
+          description: "",
+          difficulty: "",
+          status: "draft",
+          duration: "",
+          enrollments: 0,
+          courses: []
+        };
+
+        $scope.filterByStatus = function (path) {
+          if (!$scope.statusFilter) return true;
+          return path.status === $scope.statusFilter;
+        };
+
+        $scope.filterByDifficulty = function (path) {
+          if (!$scope.difficultyFilter) return true;
+          return path.difficulty === $scope.difficultyFilter;
+        };
+
+        $scope.clearFilters = function () {
+          $scope.searchQuery = "";
+          $scope.statusFilter = "";
+          $scope.difficultyFilter = "";
+        };
+
+        $scope.getStatusClass = function (status) {
+          switch (status) {
+            case "active": return "bg-green-100 text-green-800";
+            case "draft": return "bg-yellow-100 text-yellow-800";
+            case "archived": return "bg-gray-100 text-gray-800";
+            default: return "bg-gray-100 text-gray-800";
+          }
+        };
+
+        $scope.getDifficultyClass = function (difficulty) {
+          switch (difficulty) {
+            case "beginner": return "bg-blue-100 text-blue-800";
+            case "intermediate": return "bg-orange-100 text-orange-800";
+            case "advanced": return "bg-red-100 text-red-800";
+            default: return "bg-gray-100 text-gray-800";
+          }
+        };
+
+        $scope.updateSelectedCourses = function () {
+          $scope.newPath.courses = $scope.availableCourses.filter(function (course) {
+            return course.selected;
+          }).map(function (course) {
+            return { title: course.title };
+          });
+        };
+
+        $scope.viewPath = function (path) {
+          alert("Viewing learning path: " + path.title);
+        };
+
+        $scope.editPath = function (path) {
+          alert("Editing learning path: " + path.title);
+        };
+
+        $scope.deletePath = function (path) {
+          if (confirm("Are you sure you want to delete " + path.title + "?")) {
+            var index = $scope.learningPaths.indexOf(path);
+            $scope.learningPaths.splice(index, 1);
+            alert(path.title + " has been deleted");
+          }
+        };
+
+        $scope.addNewPath = function () {
+          var newId = $scope.learningPaths.length > 0 ? Math.max.apply(Math, $scope.learningPaths.map(function (p) { return p.id; })) + 1 : 1;
+          $scope.newPath.id = newId;
+          $scope.learningPaths.push(angular.copy($scope.newPath));
+
+          // Reset form
+          $scope.newPath = {
+            title: "",
+            description: "",
+            difficulty: "",
+            status: "draft",
+            duration: "",
+            enrollments: 0,
+            courses: []
+          };
+
+          // Reset course selections
+          angular.forEach($scope.availableCourses, function (course) {
+            course.selected = false;
+          });
+
+          $scope.showAddPathModal = false;
+          alert("New learning path created successfully!");
+        };
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="adminDashboard">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Learning Path Tracker - Admin Dashboard</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.3/angular.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      .gradient-bg {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      }
+      .card-hover {
+        transition: all 0.3s ease;
+      }
+      .card-hover:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+          0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      }
+      .stat-card {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      }
+      .stat-card-2 {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      }
+      .stat-card-3 {
+        background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+      }
+      .stat-card-4 {
+        background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+      }
+      .sidebar-item:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+      }
+      .pulse-animation {
+        animation: pulse 2s infinite;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.7;
+        }
+      }
+    </style>
+  </head>
+  <body class="bg-gray-50" ng-controller="DashboardController">
+    <div class="flex h-screen">
+      <!-- Sidebar -->
+      <div class="w-64 gradient-bg text-white shadow-xl">
+        <div class="p-6">
+          <div class="flex items-center space-x-3">
+            <div
+              class="w-10 h-10 bg-white rounded-lg flex items-center justify-center"
+            >
+              <i class="fas fa-graduation-cap text-purple-600 text-xl"></i>
+            </div>
+            <div>
+              <h1 class="text-xl font-bold">LearnTrack</h1>
+              <p class="text-sm opacity-80">Admin Panel</p>
+            </div>
+          </div>
+        </div>
+
+        <nav class="mt-8 px-4">
+          <div class="space-y-2">
+            <a
+              href="dashboard.html"
+              class="sidebar-item flex items-center space-x-3 px-4 py-3 text-white hover:bg-white hover:bg-opacity-10 rounded-lg transition-all duration-200 bg-white bg-opacity-20"
+            >
+              <i class="fas fa-tachometer-alt w-5"></i>
+              <span class="font-medium">Dashboard</span>
+            </a>
+            <a
+              href="manageUsers.html"
+              class="sidebar-item flex items-center space-x-3 px-4 py-3 text-white hover:bg-white hover:bg-opacity-10 rounded-lg transition-all duration-200"
+            >
+              <i class="fas fa-users w-5"></i>
+              <span class="font-medium">Manage Users</span>
+            </a>
+            <a
+              href="manage-courses.html"
+              class="sidebar-item flex items-center space-x-3 px-4 py-3 text-white hover:bg-white hover:bg-opacity-10 rounded-lg transition-all duration-200"
+            >
+              <i class="fas fa-book-open w-5"></i>
+              <span class="font-medium">Manage Courses</span>
+            </a>
+            <a
+              href="learning-paths.html"
+              class="sidebar-item flex items-center space-x-3 px-4 py-3 text-white hover:bg-white hover:bg-opacity-10 rounded-lg transition-all duration-200"
+            >
+              <i class="fas fa-route w-5"></i>
+              <span class="font-medium">Learning Paths</span>
+            </a>
+            <a
+              href="notifications.html"
+              class="sidebar-item flex items-center space-x-3 px-4 py-3 text-white hover:bg-white hover:bg-opacity-10 rounded-lg transition-all duration-200"
+            >
+              <i class="fas fa-bell w-5"></i>
+              <span class="font-medium">Send Notifications</span>
+            </a>
+            <a
+              href="reports.html"
+              class="sidebar-item flex items-center space-x-3 px-4 py-3 text-white hover:bg-white hover:bg-opacity-10 rounded-lg transition-all duration-200"
+            >
+              <i class="fas fa-chart-bar w-5"></i>
+              <span class="font-medium">Reports</span>
+            </a>
+            <a
+              href="settings.html"
+              class="sidebar-item flex items-center space-x-3 px-4 py-3 text-white hover:bg-white hover:bg-opacity-10 rounded-lg transition-all duration-200"
+            >
+              <i class="fas fa-cog w-5"></i>
+              <span class="font-medium">Settings</span>
+            </a>
+          </div>
+        </nav>
+
+        <div class="absolute bottom-8 left-4 right-4">
+          <div
+            class="flex items-center space-x-3 px-4 py-3 bg-white bg-opacity-10 rounded-lg"
+          >
+            <div
+              class="w-8 h-8 bg-white rounded-full flex items-center justify-center"
+            >
+              <i class="fas fa-user text-purple-600"></i>
+            </div>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Admin User</p>
+              <p class="text-xs opacity-70">admin@company.com</p>
+            </div>
+            <i
+              class="fas fa-sign-out-alt cursor-pointer hover:text-red-300 transition-colors"
+            ></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="flex-1 flex flex-col overflow-hidden">
+        <!-- Header -->
+        <header class="bg-white shadow-sm border-b border-gray-200">
+          <div class="flex items-center justify-between px-8 py-4">
+            <div>
+              <h1 class="text-2xl font-bold text-gray-800">Welcome, Admin!</h1>
+              <p class="text-gray-600">
+                Here's what's happening with your learning platform today.
+              </p>
+            </div>
+            <div class="flex items-center space-x-4">
+              <div class="relative">
+                <input
+                  type="text"
+                  placeholder="Search users or courses..."
+                  class="w-80 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                />
+                <i
+                  class="fas fa-search absolute right-3 top-3 text-gray-400"
+                ></i>
+              </div>
+              <div class="relative">
+                <button
+                  class="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors"
+                >
+                  <i class="fas fa-bell text-gray-600"></i>
+                  <span
+                    class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center pulse-animation"
+                    >3</span
+                  >
+                </button>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <!-- Dashboard Content -->
+        <main class="flex-1 overflow-y-auto p-8">
+          <!-- Stats Cards -->
+          <div
+            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8"
+          >
+            <div
+              class="stat-card text-white p-6 rounded-xl shadow-lg card-hover"
+            >
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-white opacity-80 text-sm font-medium">
+                    Total Users
+                  </p>
+                  <p class="text-3xl font-bold mt-2">{{stats.totalUsers}}</p>
+                  <p class="text-xs mt-2 opacity-80">
+                    <i class="fas fa-arrow-up"></i> +12% from last month
+                  </p>
+                </div>
+                <div
+                  class="w-12 h-12 bg-white bg-opacity-20 rounded-lg flex items-center justify-center"
+                >
+                  <i class="fas fa-users text-2xl"></i>
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="stat-card-2 text-white p-6 rounded-xl shadow-lg card-hover"
+            >
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-white opacity-80 text-sm font-medium">
+                    Active Courses
+                  </p>
+                  <p class="text-3xl font-bold mt-2">{{stats.activeCourses}}</p>
+                  <p class="text-xs mt-2 opacity-80">
+                    <i class="fas fa-arrow-up"></i> +8% from last month
+                  </p>
+                </div>
+                <div
+                  class="w-12 h-12 bg-white bg-opacity-20 rounded-lg flex items-center justify-center"
+                >
+                  <i class="fas fa-book-open text-2xl"></i>
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="stat-card-3 text-white p-6 rounded-xl shadow-lg card-hover"
+            >
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-white opacity-80 text-sm font-medium">
+                    Courses Completed
+                  </p>
+                  <p class="text-3xl font-bold mt-2">
+                    {{stats.coursesCompleted}}
+                  </p>
+                  <p class="text-xs mt-2 opacity-80">
+                    <i class="fas fa-arrow-up"></i> +15% from last month
+                  </p>
+                </div>
+                <div
+                  class="w-12 h-12 bg-white bg-opacity-20 rounded-lg flex items-center justify-center"
+                >
+                  <i class="fas fa-check-circle text-2xl"></i>
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="stat-card-4 text-white p-6 rounded-xl shadow-lg card-hover"
+            >
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-white opacity-80 text-sm font-medium">
+                    Certificates Issued
+                  </p>
+                  <p class="text-3xl font-bold mt-2">
+                    {{stats.certificatesIssued}}
+                  </p>
+                  <p class="text-xs mt-2 opacity-80">
+                    <i class="fas fa-arrow-up"></i> +22% from last month
+                  </p>
+                </div>
+                <div
+                  class="w-12 h-12 bg-white bg-opacity-20 rounded-lg flex items-center justify-center"
+                >
+                  <i class="fas fa-certificate text-2xl"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Charts and Recent Activity -->
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+            <!-- Engagement Chart -->
+            <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-lg">
+              <div class="flex items-center justify-between mb-6">
+                <h3 class="text-lg font-semibold text-gray-800">
+                  Learning Engagement
+                </h3>
+                <div class="flex space-x-2">
+                  <button
+                    ng-click="changeChartPeriod('7days')"
+                    ng-class="chartPeriod === '7days' ? 'bg-purple-100 text-purple-600' : 'text-gray-600 hover:bg-gray-100'"
+                    class="px-3 py-1 text-sm rounded-lg transition-colors"
+                  >
+                    7 Days
+                  </button>
+                  <button
+                    ng-click="changeChartPeriod('30days')"
+                    ng-class="chartPeriod === '30days' ? 'bg-purple-100 text-purple-600' : 'text-gray-600 hover:bg-gray-100'"
+                    class="px-3 py-1 text-sm rounded-lg transition-colors"
+                  >
+                    30 Days
+                  </button>
+                  <button
+                    ng-click="changeChartPeriod('90days')"
+                    ng-class="chartPeriod === '90days' ? 'bg-purple-100 text-purple-600' : 'text-gray-600 hover:bg-gray-100'"
+                    class="px-3 py-1 text-sm rounded-lg transition-colors"
+                  >
+                    90 Days
+                  </button>
+                </div>
+              </div>
+              <div class="relative" style="height: 300px">
+                <canvas id="engagementChart"></canvas>
+              </div>
+            </div>
+
+            <!-- Recent Activities -->
+            <div class="bg-white p-6 rounded-xl shadow-lg">
+              <h3 class="text-lg font-semibold text-gray-800 mb-6">
+                Recent Activities
+              </h3>
+              <div class="space-y-4">
+                <div
+                  ng-repeat="activity in recentActivities"
+                  class="flex items-start space-x-3 p-3 hover:bg-gray-50 rounded-lg transition-colors"
+                >
+                  <div
+                    class="w-8 h-8 rounded-full flex items-center justify-center"
+                    ng-class="activity.iconBg"
+                  >
+                    <i class="fas" ng-class="activity.icon + ' text-white'"></i>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <p class="text-sm text-gray-800 font-medium">
+                      {{activity.title}}
+                    </p>
+                    <p class="text-xs text-gray-500 mt-1">{{activity.time}}</p>
+                  </div>
+                </div>
+              </div>
+              <button
+                class="w-full mt-4 py-2 text-sm text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
+              >
+                View All Activities
+              </button>
+            </div>
+          </div>
+
+          <!-- Quick Actions -->
+          <div class="bg-white p-6 rounded-xl shadow-lg">
+            <h3 class="text-lg font-semibold text-gray-800 mb-6">
+              Quick Actions
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <button
+                class="p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-purple-400 hover:bg-purple-50 transition-all duration-200 group"
+              >
+                <div class="text-center">
+                  <i
+                    class="fas fa-plus-circle text-2xl text-gray-400 group-hover:text-purple-600 mb-2"
+                  ></i>
+                  <p
+                    class="text-sm font-medium text-gray-600 group-hover:text-purple-600"
+                  >
+                    Create New Course
+                  </p>
+                </div>
+              </button>
+              <button
+                class="p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-400 hover:bg-blue-50 transition-all duration-200 group"
+              >
+                <div class="text-center">
+                  <i
+                    class="fas fa-route text-2xl text-gray-400 group-hover:text-blue-600 mb-2"
+                  ></i>
+                  <p
+                    class="text-sm font-medium text-gray-600 group-hover:text-blue-600"
+                  >
+                    Add Learning Path
+                  </p>
+                </div>
+              </button>
+              <button
+                class="p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-green-400 hover:bg-green-50 transition-all duration-200 group"
+              >
+                <div class="text-center">
+                  <i
+                    class="fas fa-bell text-2xl text-gray-400 group-hover:text-green-600 mb-2"
+                  ></i>
+                  <p
+                    class="text-sm font-medium text-gray-600 group-hover:text-green-600"
+                  >
+                    Send Notification
+                  </p>
+                </div>
+              </button>
+              <button
+                class="p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-red-400 hover:bg-red-50 transition-all duration-200 group"
+              >
+                <div class="text-center">
+                  <i
+                    class="fas fa-chart-line text-2xl text-gray-400 group-hover:text-red-600 mb-2"
+                  ></i>
+                  <p
+                    class="text-sm font-medium text-gray-600 group-hover:text-red-600"
+                  >
+                    Generate Report
+                  </p>
+                </div>
+              </button>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <script>
+      // AngularJS App
+      var app = angular.module("adminDashboard", []);
+
+      app.controller("DashboardController", function ($scope) {
+        // Dashboard Statistics
+        $scope.stats = {
+          totalUsers: "1,247",
+          activeCourses: "89",
+          coursesCompleted: "1,156",
+          certificatesIssued: "743",
+        };
+
+        // Chart period management
+        $scope.chartPeriod = "7days";
+
+        // Chart data for different periods
+        $scope.chartData = {
+          "7days": {
+            labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+            datasets: [
+              {
+                label: "Course Completions",
+                data: [12, 19, 15, 25, 22, 18, 24],
+                borderColor: "rgb(99, 102, 241)",
+                backgroundColor: "rgba(99, 102, 241, 0.1)",
+                tension: 0.4,
+                fill: true,
+              },
+              {
+                label: "New Registrations",
+                data: [8, 12, 10, 15, 18, 14, 20],
+                borderColor: "rgb(34, 197, 94)",
+                backgroundColor: "rgba(34, 197, 94, 0.1)",
+                tension: 0.4,
+                fill: true,
+              },
+            ],
+          },
+          "30days": {
+            labels: ["Week 1", "Week 2", "Week 3", "Week 4"],
+            datasets: [
+              {
+                label: "Course Completions",
+                data: [85, 92, 78, 96],
+                borderColor: "rgb(99, 102, 241)",
+                backgroundColor: "rgba(99, 102, 241, 0.1)",
+                tension: 0.4,
+                fill: true,
+              },
+              {
+                label: "New Registrations",
+                data: [45, 52, 38, 61],
+                borderColor: "rgb(34, 197, 94)",
+                backgroundColor: "rgba(34, 197, 94, 0.1)",
+                tension: 0.4,
+                fill: true,
+              },
+            ],
+          },
+          "90days": {
+            labels: ["Month 1", "Month 2", "Month 3"],
+            datasets: [
+              {
+                label: "Course Completions",
+                data: [320, 285, 351],
+                borderColor: "rgb(99, 102, 241)",
+                backgroundColor: "rgba(99, 102, 241, 0.1)",
+                tension: 0.4,
+                fill: true,
+              },
+              {
+                label: "New Registrations",
+                data: [180, 165, 196],
+                borderColor: "rgb(34, 197, 94)",
+                backgroundColor: "rgba(34, 197, 94, 0.1)",
+                tension: 0.4,
+                fill: true,
+              },
+            ],
+          },
+        };
+
+        // Change chart period function
+        $scope.changeChartPeriod = function (period) {
+          $scope.chartPeriod = period;
+          updateChart(period);
+        };
+
+        // Recent Activities
+        $scope.recentActivities = [
+          {
+            title: "New user John Doe registered",
+            time: "2 minutes ago",
+            icon: "fa-user-plus",
+            iconBg: "bg-green-500",
+          },
+          {
+            title: 'Course "Advanced JavaScript" completed by Sarah',
+            time: "15 minutes ago",
+            icon: "fa-graduation-cap",
+            iconBg: "bg-blue-500",
+          },
+          {
+            title: 'New learning path created: "Frontend Development"',
+            time: "1 hour ago",
+            icon: "fa-route",
+            iconBg: "bg-purple-500",
+          },
+          {
+            title: "Certificate issued to Mike Wilson",
+            time: "2 hours ago",
+            icon: "fa-certificate",
+            iconBg: "bg-yellow-500",
+          },
+          {
+            title: "System backup completed successfully",
+            time: "3 hours ago",
+            icon: "fa-check-circle",
+            iconBg: "bg-green-500",
+          },
+        ];
+      });
+
+      // Chart Management
+      let engagementChart;
+
+      // Initialize Chart
+      function initializeChart() {
+        const ctx = document.getElementById("engagementChart");
+        if (ctx) {
+          // Get the scope to access chart data
+          const scope = angular.element(document.body).scope();
+
+          engagementChart = new Chart(ctx, {
+            type: "line",
+            data: scope.chartData["7days"],
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: {
+                  position: "bottom",
+                  labels: {
+                    usePointStyle: true,
+                    padding: 20,
+                    font: {
+                      size: 12,
+                    },
+                  },
+                },
+              },
+              scales: {
+                y: {
+                  beginAtZero: true,
+                  grid: {
+                    color: "rgba(0, 0, 0, 0.05)",
+                  },
+                  ticks: {
+                    font: {
+                      size: 11,
+                    },
+                  },
+                },
+                x: {
+                  grid: {
+                    display: false,
+                  },
+                  ticks: {
+                    font: {
+                      size: 11,
+                    },
+                  },
+                },
+              },
+              elements: {
+                point: {
+                  radius: 4,
+                  hoverRadius: 6,
+                },
+              },
+            },
+          });
+        }
+      }
+
+      // Update Chart function
+      function updateChart(period) {
+        if (engagementChart) {
+          const scope = angular.element(document.body).scope();
+          engagementChart.data = scope.chartData[period];
+          engagementChart.update("active");
+        }
+      }
+
+      // Initialize chart when DOM is ready
+      document.addEventListener("DOMContentLoaded", function () {
+        // Wait for AngularJS to initialize
+        setTimeout(function () {
+          initializeChart();
+        }, 1000);
+      });
+    </script>
+  </body>
+</html>

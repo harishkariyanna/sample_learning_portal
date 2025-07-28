@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="notificationsApp">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Learning Path Tracker - Send Notifications</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.3/angular.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      .gradient-bg {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      }
+      .card-hover {
+        transition: all 0.3s ease;
+      }
+      .card-hover:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+      }
+      .sidebar-item:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-50" ng-controller="NotificationsController">
+    <div class="flex h-screen">
+      <!-- Sidebar -->
+      <div class="w-64 gradient-bg text-white shadow-xl">
+        <div class="p-6">
+          <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 bg-white rounded-lg flex items-center justify-center">
+              <i class="fas fa-graduation-cap text-purple-600 text-xl"></i>
+            </div>
+            <div>
+              <h1 class="text-xl font-bold">LearnTrack</h1>
+              <p class="text-sm opacity-80">Admin Panel</p>
+            </div>
+          </div>
+        </div>
+
+        <nav class="mt-8 px-4">
+          <div class="space-y-2">
+            <a href="dashboard.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 text-white hover:bg-white hover:bg-opacity-10 rounded-lg transition-all duration-200">
+              <i class="fas fa-tachometer-alt w-5"></i>
+              <span class="font-medium">Dashboard</span>
+            </a>
+            <a href="manageUsers.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 text-white hover:bg-white hover:bg-opacity-10 rounded-lg transition-all duration-200">
+              <i class="fas fa-users w-5"></i>
+              <span class="font-medium">Manage Users</span>
+            </a>
+            <a href="manage-courses.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 text-white hover:bg-white hover:bg-opacity-10 rounded-lg transition-all duration-200">
+              <i class="fas fa-book-open w-5"></i>
+              <span class="font-medium">Manage Courses</span>
+            </a>
+            <a href="learning-paths.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 text-white hover:bg-white hover:bg-opacity-10 rounded-lg transition-all duration-200">
+              <i class="fas fa-route w-5"></i>
+              <span class="font-medium">Learning Paths</span>
+            </a>
+            <a href="#" class="sidebar-item flex items-center space-x-3 px-4 py-3 text-white hover:bg-white hover:bg-opacity-10 rounded-lg transition-all duration-200 bg-white bg-opacity-20">
+              <i class="fas fa-bell w-5"></i>
+              <span class="font-medium">Send Notifications</span>
+            </a>
+            <a href="reports.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 text-white hover:bg-white hover:bg-opacity-10 rounded-lg transition-all duration-200">
+              <i class="fas fa-chart-bar w-5"></i>
+              <span class="font-medium">Reports</span>
+            </a>
+            <a href="settings.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 text-white hover:bg-white hover:bg-opacity-10 rounded-lg transition-all duration-200">
+              <i class="fas fa-cog w-5"></i>
+              <span class="font-medium">Settings</span>
+            </a>
+          </div>
+        </nav>
+
+        <div class="absolute bottom-8 left-4 right-4">
+          <div class="flex items-center space-x-3 px-4 py-3 bg-white bg-opacity-10 rounded-lg">
+            <div class="w-8 h-8 bg-white rounded-full flex items-center justify-center">
+              <i class="fas fa-user text-purple-600"></i>
+            </div>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Admin User</p>
+              <p class="text-xs opacity-70">admin@company.com</p>
+            </div>
+            <i class="fas fa-sign-out-alt cursor-pointer hover:text-red-300 transition-colors"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="flex-1 flex flex-col overflow-hidden">
+        <!-- Header -->
+        <header class="bg-white shadow-sm border-b border-gray-200">
+          <div class="flex items-center justify-between px-8 py-4">
+            <div>
+              <h1 class="text-2xl font-bold text-gray-800">Send Notifications</h1>
+              <p class="text-gray-600">Communicate with your learners effectively</p>
+            </div>
+            <div class="flex items-center space-x-4">
+              <button ng-click="showComposeModal = true" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
+                <i class="fas fa-plus mr-2"></i>Compose Notification
+              </button>
+            </div>
+          </div>
+        </header>
+
+        <!-- Notifications Content -->
+        <main class="flex-1 overflow-y-auto p-8">
+          <!-- Notification Stats -->
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white p-6 rounded-xl shadow-lg card-hover">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-gray-600 text-sm font-medium">Total Sent</p>
+                  <p class="text-3xl font-bold text-gray-800 mt-2">{{notificationStats.totalSent}}</p>
+                </div>
+                <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                  <i class="fas fa-paper-plane text-blue-600 text-xl"></i>
+                </div>
+              </div>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-lg card-hover">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-gray-600 text-sm font-medium">Delivered</p>
+                  <p class="text-3xl font-bold text-green-600 mt-2">{{notificationStats.delivered}}</p>
+                </div>
+                <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                  <i class="fas fa-check-circle text-green-600 text-xl"></i>
+                </div>
+              </div>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-lg card-hover">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-gray-600 text-sm font-medium">Open Rate</p>
+                  <p class="text-3xl font-bold text-purple-600 mt-2">{{notificationStats.openRate}}%</p>
+                </div>
+                <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                  <i class="fas fa-eye text-purple-600 text-xl"></i>
+                </div>
+              </div>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-lg card-hover">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-gray-600 text-sm font-medium">Click Rate</p>
+                  <p class="text-3xl font-bold text-orange-600 mt-2">{{notificationStats.clickRate}}%</p>
+                </div>
+                <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
+                  <i class="fas fa-mouse-pointer text-orange-600 text-xl"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Actions -->
+          <div class="bg-white p-6 rounded-xl shadow-lg mb-8">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4">Quick Actions</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <button ng-click="sendQuickNotification('course_reminder')" class="p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-400 hover:bg-blue-50 transition-all duration-200 group">
+                <div class="text-center">
+                  <i class="fas fa-clock text-2xl text-gray-400 group-hover:text-blue-600 mb-2"></i>
+                  <p class="text-sm font-medium text-gray-600 group-hover:text-blue-600">Course Reminder</p>
+                  <p class="text-xs text-gray-500 mt-1">Remind users about pending courses</p>
+                </div>
+              </button>
+              <button ng-click="sendQuickNotification('new_course')" class="p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-green-400 hover:bg-green-50 transition-all duration-200 group">
+                <div class="text-center">
+                  <i class="fas fa-plus-circle text-2xl text-gray-400 group-hover:text-green-600 mb-2"></i>
+                  <p class="text-sm font-medium text-gray-600 group-hover:text-green-600">New Course Alert</p>
+                  <p class="text-xs text-gray-500 mt-1">Announce new course availability</p>
+                </div>
+              </button>
+              <button ng-click="sendQuickNotification('achievement')" class="p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-yellow-400 hover:bg-yellow-50 transition-all duration-200 group">
+                <div class="text-center">
+                  <i class="fas fa-trophy text-2xl text-gray-400 group-hover:text-yellow-600 mb-2"></i>
+                  <p class="text-sm font-medium text-gray-600 group-hover:text-yellow-600">Achievement Congratulations</p>
+                  <p class="text-xs text-gray-500 mt-1">Celebrate user achievements</p>
+                </div>
+              </button>
+            </div>
+          </div>
+
+          <!-- Recent Notifications -->
+          <div class="bg-white p-6 rounded-xl shadow-lg">
+            <div class="flex items-center justify-between mb-6">
+              <h3 class="text-lg font-semibold text-gray-800">Recent Notifications</h3>
+              <div class="flex space-x-2">
+                <select ng-model="statusFilter" class="px-3 py-1 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                  <option value="">All Status</option>
+                  <option value="sent">Sent</option>
+                  <option value="scheduled">Scheduled</option>
+                  <option value="draft">Draft</option>
+                </select>
+              </div>
+            </div>
+            <div class="space-y-4">
+              <div ng-repeat="notification in recentNotifications | filter:filterByStatus" class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
+                <div class="flex items-start justify-between">
+                  <div class="flex-1">
+                    <div class="flex items-center space-x-3 mb-2">
+                      <h4 class="font-medium text-gray-800">{{notification.title}}</h4>
+                      <span ng-class="getNotificationStatusClass(notification.status)" class="px-2 py-1 text-xs font-medium rounded-full">
+                        {{notification.status | capitalize}}
+                      </span>
+                      <span ng-class="getNotificationTypeClass(notification.type)" class="px-2 py-1 text-xs font-medium rounded-full">
+                        {{notification.type | capitalize}}
+                      </span>
+                    </div>
+                    <p class="text-gray-600 text-sm mb-3">{{notification.message}}</p>
+                    <div class="flex items-center space-x-6 text-xs text-gray-500">
+                      <div class="flex items-center space-x-1">
+                        <i class="fas fa-users"></i>
+                        <span>{{notification.recipients}} recipients</span>
+                      </div>
+                      <div class="flex items-center space-x-1">
+                        <i class="fas fa-clock"></i>
+                        <span>{{notification.sentAt}}</span>
+                      </div>
+                      <div class="flex items-center space-x-1" ng-if="notification.status === 'sent'">
+                        <i class="fas fa-eye"></i>
+                        <span>{{notification.openRate}}% opened</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="flex space-x-2">
+                    <button ng-click="viewNotification(notification)" class="p-2 text-gray-600 hover:text-blue-600 transition-colors">
+                      <i class="fas fa-eye"></i>
+                    </button>
+                    <button ng-if="notification.status === 'draft'" ng-click="editNotification(notification)" class="p-2 text-gray-600 hover:text-green-600 transition-colors">
+                      <i class="fas fa-edit"></i>
+                    </button>
+                    <button ng-click="deleteNotification(notification)" class="p-2 text-gray-600 hover:text-red-600 transition-colors">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <!-- Compose Notification Modal -->
+    <div ng-show="showComposeModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div class="bg-white rounded-xl shadow-2xl w-full max-w-3xl mx-4 max-h-screen overflow-y-auto">
+        <div class="p-6 border-b border-gray-200">
+          <div class="flex items-center justify-between">
+            <h2 class="text-xl font-semibold text-gray-800">Compose Notification</h2>
+            <button ng-click="showComposeModal = false" class="text-gray-400 hover:text-gray-600">
+              <i class="fas fa-times text-xl"></i>
+            </button>
+          </div>
+        </div>
+        <form ng-submit="sendNotification()" class="p-6">
+          <div class="space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Notification Type</label>
+                <select ng-model="newNotification.type" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                  <option value="">Select Type</option>
+                  <option value="announcement">Announcement</option>
+                  <option value="reminder">Reminder</option>
+                  <option value="achievement">Achievement</option>
+                  <option value="course_update">Course Update</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Priority</label>
+                <select ng-model="newNotification.priority" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                  <option value="low">Low</option>
+                  <option value="normal">Normal</option>
+                  <option value="high">High</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Title</label>
+              <input type="text" ng-model="newNotification.title" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent" />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Message</label>
+              <textarea ng-model="newNotification.message" rows="6" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"></textarea>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Recipients</label>
+              <div class="space-y-2">
+                <label class="flex items-center space-x-2">
+                  <input type="radio" ng-model="newNotification.audience" value="all" class="text-purple-600 focus:ring-purple-500" />
+                  <span class="text-sm text-gray-700">All Users</span>
+                </label>
+                <label class="flex items-center space-x-2">
+                  <input type="radio" ng-model="newNotification.audience" value="active" class="text-purple-600 focus:ring-purple-500" />
+                  <span class="text-sm text-gray-700">Active Users Only</span>
+                </label>
+                <label class="flex items-center space-x-2">
+                  <input type="radio" ng-model="newNotification.audience" value="role" class="text-purple-600 focus:ring-purple-500" />
+                  <span class="text-sm text-gray-700">By Role</span>
+                </label>
+                <div ng-if="newNotification.audience === 'role'" class="ml-6">
+                  <select ng-model="newNotification.targetRole" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                    <option value="">Select Role</option>
+                    <option value="employee">Employee</option>
+                    <option value="manager">Manager</option>
+                    <option value="admin">Admin</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Send Option</label>
+                <select ng-model="newNotification.sendOption" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                  <option value="now">Send Now</option>
+                  <option value="schedule">Schedule for Later</option>
+                  <option value="draft">Save as Draft</option>
+                </select>
+              </div>
+              <div ng-if="newNotification.sendOption === 'schedule'">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Schedule Date & Time</label>
+                <input type="datetime-local" ng-model="newNotification.scheduledAt" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent" />
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center justify-end space-x-3 mt-6">
+            <button type="button" ng-click="showComposeModal = false" class="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+              Cancel
+            </button>
+            <button type="submit" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
+              {{newNotification.sendOption === 'draft' ? 'Save Draft' : (newNotification.sendOption === 'schedule' ? 'Schedule' : 'Send Now')}}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      var app = angular.module("notificationsApp", []);
+
+      app.filter("capitalize", function () {
+        return function (input) {
+          return input ? input.charAt(0).toUpperCase() + input.slice(1) : "";
+        };
+      });
+
+      app.controller("NotificationsController", function ($scope) {
+        $scope.notificationStats = {
+          totalSent: 1456,
+          delivered: 1398,
+          openRate: 78,
+          clickRate: 23
+        };
+
+        $scope.statusFilter = "";
+        $scope.showComposeModal = false;
+
+        $scope.recentNotifications = [
+          {
+            id: 1,
+            title: "New Course Available: Advanced React",
+            message: "We're excited to announce a new advanced React course is now available for enrollment.",
+            type: "announcement",
+            status: "sent",
+            recipients: 234,
+            sentAt: "2 hours ago",
+            openRate: 85
+          },
+          {
+            id: 2,
+            title: "Course Completion Reminder",
+            message: "Don't forget to complete your JavaScript Fundamentals course by the end of this week.",
+            type: "reminder",
+            status: "sent",
+            recipients: 89,
+            sentAt: "1 day ago",
+            openRate: 72
+          },
+          {
+            id: 3,
+            title: "Congratulations on Your Achievement!",
+            message: "You've successfully completed the Full Stack Development learning path. Well done!",
+            type: "achievement",
+            status: "scheduled",
+            recipients: 15,
+            sentAt: "Tomorrow at 9:00 AM",
+            openRate: 0
+          },
+          {
+            id: 4,
+            title: "System Maintenance Notice",
+            message: "The learning platform will undergo scheduled maintenance this weekend.",
+            type: "announcement",
+            status: "draft",
+            recipients: 0,
+            sentAt: "Not sent",
+            openRate: 0
+          }
+        ];
+
+        $scope.newNotification = {
+          title: "",
+          message: "",
+          type: "",
+          priority: "normal",
+          audience: "all",
+          targetRole: "",
+          sendOption: "now",
+          scheduledAt: ""
+        };
+
+        $scope.filterByStatus = function (notification) {
+          if (!$scope.statusFilter) return true;
+          return notification.status === $scope.statusFilter;
+        };
+
+        $scope.getNotificationStatusClass = function (status) {
+          switch (status) {
+            case "sent": return "bg-green-100 text-green-800";
+            case "scheduled": return "bg-blue-100 text-blue-800";
+            case "draft": return "bg-yellow-100 text-yellow-800";
+            default: return "bg-gray-100 text-gray-800";
+          }
+        };
+
+        $scope.getNotificationTypeClass = function (type) {
+          switch (type) {
+            case "announcement": return "bg-purple-100 text-purple-800";
+            case "reminder": return "bg-orange-100 text-orange-800";
+            case "achievement": return "bg-green-100 text-green-800";
+            case "course_update": return "bg-blue-100 text-blue-800";
+            default: return "bg-gray-100 text-gray-800";
+          }
+        };
+
+        $scope.sendQuickNotification = function (type) {
+          var templates = {
+            course_reminder: {
+              title: "Course Completion Reminder",
+              message: "Don't forget to complete your pending courses. Stay on track with your learning goals!",
+              type: "reminder"
+            },
+            new_course: {
+              title: "New Course Available",
+              message: "A new course has been added to our catalog. Check it out and expand your skills!",
+              type: "announcement"
+            },
+            achievement: {
+              title: "Congratulations on Your Achievement!",
+              message: "You've reached a new milestone in your learning journey. Keep up the great work!",
+              type: "achievement"
+            }
+          };
+
+          var template = templates[type];
+          if (template) {
+            $scope.newNotification = angular.extend({}, $scope.newNotification, template);
+            $scope.showComposeModal = true;
+          }
+        };
+
+        $scope.viewNotification = function (notification) {
+          alert("Viewing notification: " + notification.title);
+        };
+
+        $scope.editNotification = function (notification) {
+          alert("Editing notification: " + notification.title);
+        };
+
+        $scope.deleteNotification = function (notification) {
+          if (confirm("Are you sure you want to delete this notification?")) {
+            var index = $scope.recentNotifications.indexOf(notification);
+            $scope.recentNotifications.splice(index, 1);
+            alert("Notification deleted successfully");
+          }
+        };
+
+        $scope.sendNotification = function () {
+          var newId = $scope.recentNotifications.length > 0 ? Math.max.apply(Math, $scope.recentNotifications.map(function (n) { return n.id; })) + 1 : 1;
+          
+          var notification = {
+            id: newId,
+            title: $scope.newNotification.title,
+            message: $scope.newNotification.message,
+            type: $scope.newNotification.type,
+            status: $scope.newNotification.sendOption === 'draft' ? 'draft' : ($scope.newNotification.sendOption === 'schedule' ? 'scheduled' : 'sent'),
+            recipients: $scope.newNotification.audience === 'all' ? 1247 : ($scope.newNotification.audience === 'active' ? 1089 : 150),
+            sentAt: $scope.newNotification.sendOption === 'now' ? 'Just now' : ($scope.newNotification.sendOption === 'schedule' ? $scope.newNotification.scheduledAt : 'Not sent'),
+            openRate: $scope.newNotification.sendOption === 'now' ? 0 : 0
+          };
+
+          $scope.recentNotifications.unshift(notification);
+
+          // Reset form
+          $scope.newNotification = {
+            title: "",
+            message: "",
+            type: "",
+            priority: "normal",
+            audience: "all",
+            targetRole: "",
+            sendOption: "now",
+            scheduledAt: ""
+          };
+
+          $scope.showComposeModal = false;
+          
+          var action = notification.status === 'draft' ? 'saved as draft' : (notification.status === 'scheduled' ? 'scheduled' : 'sent');
+          alert("Notification " + action + " successfully!");
+        };
+      });
+    </script>
+  </body>
+</html>

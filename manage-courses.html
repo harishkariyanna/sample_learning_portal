@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="manageCoursesApp">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Learning Path Tracker - Manage Courses</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.3/angular.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      .gradient-bg {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      }
+      .card-hover {
+        transition: all 0.3s ease;
+      }
+      .card-hover:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+      }
+      .sidebar-item:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-50" ng-controller="ManageCoursesController">
+    <div class="flex h-screen">
+      <!-- Sidebar -->
+      <div class="w-64 gradient-bg text-white shadow-xl">
+        <div class="p-6">
+          <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 bg-white rounded-lg flex items-center justify-center">
+              <i class="fas fa-graduation-cap text-purple-600 text-xl"></i>
+            </div>
+            <div>
+              <h1 class="text-xl font-bold">LearnTrack</h1>
+              <p class="text-sm opacity-80">Admin Panel</p>
+            </div>
+          </div>
+        </div>
+
+        <nav class="mt-8 px-4">
+          <div class="space-y-2">
+            <a href="dashboard.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 text-white hover:bg-white hover:bg-opacity-10 rounded-lg transition-all duration-200">
+              <i class="fas fa-tachometer-alt w-5"></i>
+              <span class="font-medium">Dashboard</span>
+            </a>
+            <a href="manageUsers.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 text-white hover:bg-white hover:bg-opacity-10 rounded-lg transition-all duration-200">
+              <i class="fas fa-users w-5"></i>
+              <span class="font-medium">Manage Users</span>
+            </a>
+            <a href="#" class="sidebar-item flex items-center space-x-3 px-4 py-3 text-white hover:bg-white hover:bg-opacity-10 rounded-lg transition-all duration-200 bg-white bg-opacity-20">
+              <i class="fas fa-book-open w-5"></i>
+              <span class="font-medium">Manage Courses</span>
+            </a>
+            <a href="learning-paths.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 text-white hover:bg-white hover:bg-opacity-10 rounded-lg transition-all duration-200">
+              <i class="fas fa-route w-5"></i>
+              <span class="font-medium">Learning Paths</span>
+            </a>
+            <a href="notifications.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 text-white hover:bg-white hover:bg-opacity-10 rounded-lg transition-all duration-200">
+              <i class="fas fa-bell w-5"></i>
+              <span class="font-medium">Send Notifications</span>
+            </a>
+            <a href="reports.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 text-white hover:bg-white hover:bg-opacity-10 rounded-lg transition-all duration-200">
+              <i class="fas fa-chart-bar w-5"></i>
+              <span class="font-medium">Reports</span>
+            </a>
+            <a href="settings.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 text-white hover:bg-white hover:bg-opacity-10 rounded-lg transition-all duration-200">
+              <i class="fas fa-cog w-5"></i>
+              <span class="font-medium">Settings</span>
+            </a>
+          </div>
+        </nav>
+
+        <div class="absolute bottom-8 left-4 right-4">
+          <div class="flex items-center space-x-3 px-4 py-3 bg-white bg-opacity-10 rounded-lg">
+            <div class="w-8 h-8 bg-white rounded-full flex items-center justify-center">
+              <i class="fas fa-user text-purple-600"></i>
+            </div>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Admin User</p>
+              <p class="text-xs opacity-70">admin@company.com</p>
+            </div>
+            <i class="fas fa-sign-out-alt cursor-pointer hover:text-red-300 transition-colors"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="flex-1 flex flex-col overflow-hidden">
+        <!-- Header -->
+        <header class="bg-white shadow-sm border-b border-gray-200">
+          <div class="flex items-center justify-between px-8 py-4">
+            <div>
+              <h1 class="text-2xl font-bold text-gray-800">Manage Courses</h1>
+              <p class="text-gray-600">Create, edit, and organize your learning courses</p>
+            </div>
+            <div class="flex items-center space-x-4">
+              <button ng-click="showAddCourseModal = true" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
+                <i class="fas fa-plus mr-2"></i>Add New Course
+              </button>
+            </div>
+          </div>
+        </header>
+
+        <!-- Course Management Content -->
+        <main class="flex-1 overflow-y-auto p-8">
+          <!-- Course Stats -->
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white p-6 rounded-xl shadow-lg card-hover">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-gray-600 text-sm font-medium">Total Courses</p>
+                  <p class="text-3xl font-bold text-gray-800 mt-2">{{courseStats.total}}</p>
+                </div>
+                <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                  <i class="fas fa-book-open text-blue-600 text-xl"></i>
+                </div>
+              </div>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-lg card-hover">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-gray-600 text-sm font-medium">Active Courses</p>
+                  <p class="text-3xl font-bold text-green-600 mt-2">{{courseStats.active}}</p>
+                </div>
+                <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                  <i class="fas fa-play-circle text-green-600 text-xl"></i>
+                </div>
+              </div>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-lg card-hover">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-gray-600 text-sm font-medium">Draft Courses</p>
+                  <p class="text-3xl font-bold text-yellow-600 mt-2">{{courseStats.draft}}</p>
+                </div>
+                <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
+                  <i class="fas fa-edit text-yellow-600 text-xl"></i>
+                </div>
+              </div>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-lg card-hover">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-gray-600 text-sm font-medium">Enrollments</p>
+                  <p class="text-3xl font-bold text-purple-600 mt-2">{{courseStats.enrollments}}</p>
+                </div>
+                <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                  <i class="fas fa-users text-purple-600 text-xl"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Filters and Search -->
+          <div class="bg-white p-6 rounded-xl shadow-lg mb-8">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
+              <div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
+                <div class="relative">
+                  <input type="text" ng-model="searchQuery" placeholder="Search courses..." class="w-full md:w-80 px-4 py-2 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent" />
+                  <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                </div>
+                <select ng-model="statusFilter" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                  <option value="">All Status</option>
+                  <option value="active">Active</option>
+                  <option value="draft">Draft</option>
+                  <option value="archived">Archived</option>
+                </select>
+                <select ng-model="categoryFilter" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                  <option value="">All Categories</option>
+                  <option value="programming">Programming</option>
+                  <option value="design">Design</option>
+                  <option value="marketing">Marketing</option>
+                  <option value="business">Business</option>
+                </select>
+              </div>
+              <button ng-click="clearFilters()" class="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                Clear Filters
+              </button>
+            </div>
+          </div>
+
+          <!-- Courses Grid -->
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div ng-repeat="course in courses | filter:searchQuery | filter:filterByStatus | filter:filterByCategory" class="bg-white rounded-xl shadow-lg overflow-hidden card-hover">
+              <div class="relative">
+                <img ng-src="{{course.thumbnail}}" alt="{{course.title}}" class="w-full h-48 object-cover" />
+                <div class="absolute top-4 right-4">
+                  <span ng-class="getStatusClass(course.status)" class="px-2 py-1 text-xs font-medium rounded-full">
+                    {{course.status | capitalize}}
+                  </span>
+                </div>
+              </div>
+              <div class="p-6">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-xs font-medium text-purple-600 bg-purple-100 px-2 py-1 rounded-full">
+                    {{course.category | capitalize}}
+                  </span>
+                  <span class="text-xs text-gray-500">{{course.duration}}</span>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-800 mb-2">{{course.title}}</h3>
+                <p class="text-gray-600 text-sm mb-4 line-clamp-2">{{course.description}}</p>
+                <div class="flex items-center justify-between mb-4">
+                  <div class="flex items-center space-x-2">
+                    <i class="fas fa-users text-gray-400"></i>
+                    <span class="text-sm text-gray-600">{{course.enrollments}} enrolled</span>
+                  </div>
+                  <div class="flex items-center space-x-1">
+                    <i class="fas fa-star text-yellow-400"></i>
+                    <span class="text-sm text-gray-600">{{course.rating}}</span>
+                  </div>
+                </div>
+                <div class="flex items-center justify-between">
+                  <button ng-click="viewCourse(course)" class="text-purple-600 hover:text-purple-700 text-sm font-medium">
+                    View Details
+                  </button>
+                  <div class="flex space-x-2">
+                    <button ng-click="editCourse(course)" class="p-2 text-gray-600 hover:text-blue-600 transition-colors">
+                      <i class="fas fa-edit"></i>
+                    </button>
+                    <button ng-click="deleteCourse(course)" class="p-2 text-gray-600 hover:text-red-600 transition-colors">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <!-- Add Course Modal -->
+    <div ng-show="showAddCourseModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl mx-4 max-h-screen overflow-y-auto">
+        <div class="p-6 border-b border-gray-200">
+          <div class="flex items-center justify-between">
+            <h2 class="text-xl font-semibold text-gray-800">Add New Course</h2>
+            <button ng-click="showAddCourseModal = false" class="text-gray-400 hover:text-gray-600">
+              <i class="fas fa-times text-xl"></i>
+            </button>
+          </div>
+        </div>
+        <form ng-submit="addNewCourse()" class="p-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="md:col-span-2">
+              <label class="block text-sm font-medium text-gray-700 mb-1">Course Title</label>
+              <input type="text" ng-model="newCourse.title" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent" />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Category</label>
+              <select ng-model="newCourse.category" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                <option value="">Select Category</option>
+                <option value="programming">Programming</option>
+                <option value="design">Design</option>
+                <option value="marketing">Marketing</option>
+                <option value="business">Business</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Duration</label>
+              <input type="text" ng-model="newCourse.duration" placeholder="e.g., 4 weeks" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent" />
+            </div>
+            <div class="md:col-span-2">
+              <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+              <textarea ng-model="newCourse.description" rows="4" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"></textarea>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Thumbnail URL</label>
+              <input type="url" ng-model="newCourse.thumbnail" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent" />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+              <select ng-model="newCourse.status" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                <option value="draft">Draft</option>
+                <option value="active">Active</option>
+              </select>
+            </div>
+          </div>
+          <div class="flex items-center justify-end space-x-3 mt-6">
+            <button type="button" ng-click="showAddCourseModal = false" class="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+              Cancel
+            </button>
+            <button type="submit" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
+              Add Course
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      var app = angular.module("manageCoursesApp", []);
+
+      app.filter("capitalize", function () {
+        return function (input) {
+          return input ? input.charAt(0).toUpperCase() + input.slice(1) : "";
+        };
+      });
+
+      app.controller("ManageCoursesController", function ($scope) {
+        $scope.courseStats = {
+          total: 89,
+          active: 67,
+          draft: 15,
+          enrollments: 1247
+        };
+
+        $scope.searchQuery = "";
+        $scope.statusFilter = "";
+        $scope.categoryFilter = "";
+        $scope.showAddCourseModal = false;
+
+        $scope.courses = [
+          {
+            id: 1,
+            title: "Advanced JavaScript Programming",
+            description: "Master advanced JavaScript concepts including closures, prototypes, and async programming.",
+            category: "programming",
+            status: "active",
+            duration: "6 weeks",
+            enrollments: 234,
+            rating: 4.8,
+            thumbnail: "https://images.unsplash.com/photo-1627398242454-45a1465c2479?w=400"
+          },
+          {
+            id: 2,
+            title: "UI/UX Design Fundamentals",
+            description: "Learn the principles of user interface and user experience design.",
+            category: "design",
+            status: "active",
+            duration: "4 weeks",
+            enrollments: 189,
+            rating: 4.6,
+            thumbnail: "https://images.unsplash.com/photo-1561070791-2526d30994b5?w=400"
+          },
+          {
+            id: 3,
+            title: "Digital Marketing Strategy",
+            description: "Comprehensive guide to digital marketing and social media strategies.",
+            category: "marketing",
+            status: "draft",
+            duration: "5 weeks",
+            enrollments: 0,
+            rating: 0,
+            thumbnail: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400"
+          }
+        ];
+
+        $scope.newCourse = {
+          title: "",
+          description: "",
+          category: "",
+          status: "draft",
+          duration: "",
+          thumbnail: "",
+          enrollments: 0,
+          rating: 0
+        };
+
+        $scope.filterByStatus = function (course) {
+          if (!$scope.statusFilter) return true;
+          return course.status === $scope.statusFilter;
+        };
+
+        $scope.filterByCategory = function (course) {
+          if (!$scope.categoryFilter) return true;
+          return course.category === $scope.categoryFilter;
+        };
+
+        $scope.clearFilters = function () {
+          $scope.searchQuery = "";
+          $scope.statusFilter = "";
+          $scope.categoryFilter = "";
+        };
+
+        $scope.getStatusClass = function (status) {
+          switch (status) {
+            case "active": return "bg-green-100 text-green-800";
+            case "draft": return "bg-yellow-100 text-yellow-800";
+            case "archived": return "bg-gray-100 text-gray-800";
+            default: return "bg-gray-100 text-gray-800";
+          }
+        };
+
+        $scope.viewCourse = function (course) {
+          alert("Viewing course: " + course.title);
+        };
+
+        $scope.editCourse = function (course) {
+          alert("Editing course: " + course.title);
+        };
+
+        $scope.deleteCourse = function (course) {
+          if (confirm("Are you sure you want to delete " + course.title + "?")) {
+            var index = $scope.courses.indexOf(course);
+            $scope.courses.splice(index, 1);
+            alert(course.title + " has been deleted");
+          }
+        };
+
+        $scope.addNewCourse = function () {
+          var newId = $scope.courses.length > 0 ? Math.max.apply(Math, $scope.courses.map(function (c) { return c.id; })) + 1 : 1;
+          $scope.newCourse.id = newId;
+          $scope.courses.push(angular.copy($scope.newCourse));
+
+          $scope.newCourse = {
+            title: "",
+            description: "",
+            category: "",
+            status: "draft",
+            duration: "",
+            thumbnail: "",
+            enrollments: 0,
+            rating: 0
+          };
+
+          $scope.showAddCourseModal = false;
+          alert("New course added successfully!");
+        };
+      });
+    </script>
+  </body>
+</html>
