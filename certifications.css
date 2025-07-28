@@ -1,0 +1,9 @@
+body { display: flex; margin: 0; font-family: Arial; }
+aside { width: 220px; background: #f0f0f0; padding: 20px; height: 100vh; }
+nav a { display: block; margin: 10px 0; text-decoration: none; color: #333; }
+nav a.active { color: #007bff; font-weight: bold; }
+main { flex-grow: 1; padding: 20px; }
+.upload { background: #007bff; color: #fff; border: none; padding: 10px 15px; margin-bottom: 20px; }
+table { width: 100%; border-collapse: collapse; }
+th, td { border: 1px solid #ccc; padding: 10px; text-align: left; }
+button { background: #007bff; color: white; border: none; padding: 5px 10px; }

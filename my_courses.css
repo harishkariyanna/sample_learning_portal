@@ -1,0 +1,138 @@
+body {
+    display: flex;
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f8f9fa;
+}
+
+aside {
+    width: 250px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    height: 100vh;
+    padding: 0;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+    position: fixed;
+    overflow-y: auto;
+}
+
+aside h2 {
+    color: white;
+    text-align: center;
+    padding: 20px;
+    margin: 0;
+    font-size: 20px;
+    font-weight: 600;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+}
+
+nav {
+    padding: 20px 0;
+}
+
+nav a {
+    display: flex;
+    align-items: center;
+    padding: 12px 25px;
+    text-decoration: none;
+    color: rgba(255,255,255,0.8);
+    transition: all 0.3s ease;
+    border-left: 3px solid transparent;
+}
+
+nav a:hover {
+    background: rgba(255,255,255,0.1);
+    color: white;
+    border-left-color: #fff;
+}
+
+nav a.active {
+    background: rgba(255,255,255,0.2);
+    color: white;
+    border-left-color: #fff;
+    font-weight: 600;
+}
+
+nav a i {
+    margin-right: 10px;
+    width: 20px;
+}
+
+main {
+    flex-grow: 1;
+    margin-left: 250px;
+    padding: 30px;
+    min-height: 100vh;
+}
+
+.learning-paths, .courses {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 30px;
+}
+
+.path, .course {
+    background: white;
+    border: 1px solid #e9ecef;
+    padding: 25px;
+    border-radius: 15px;
+    width: calc(33.333% - 14px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+}
+
+.path:hover, .course:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+
+.path h3, .course h3 {
+    color: #333;
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+.path p, .course p {
+    color: #6c757d;
+    margin-bottom: 20px;
+}
+
+button {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    width: 100%;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+h1, h2 {
+    color: #333;
+    font-weight: 600;
+    margin-bottom: 25px;
+}
+
+@media (max-width: 768px) {
+    aside {
+        width: 100%;
+        height: auto;
+        position: relative;
+    }
+    
+    main {
+        margin-left: 0;
+        padding: 20px;
+    }
+    
+    .path, .course {
+        width: 100%;
+    }
+}

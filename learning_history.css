@@ -1,0 +1,8 @@
+body { display: flex; font-family: Arial; margin: 0; }
+aside { width: 220px; background: #f0f0f0; padding: 20px; height: 100vh; }
+nav a { display: block; margin: 10px 0; text-decoration: none; color: #333; }
+nav a.active { font-weight: bold; color: #007bff; }
+main { flex-grow: 1; padding: 20px; }
+table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
+th, td { border: 1px solid #ccc; padding: 10px; text-align: left; }
+button { background: #007bff; color: white; border: none; padding: 5px 10px; }

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Certifications</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="shared.css">
+</head>
+<body>
+    <aside>
+        <h2>Company Logo</h2>
+        <nav>
+            <a href="dashboard.html"><i class="fas fa-tachometer-alt"></i>Dashboard</a>
+            <a href="my_courses.html"><i class="fas fa-book"></i>My Courses</a>
+            <a href="quizzes.html"><i class="fas fa-question-circle"></i>Quizzes</a>
+            <a href="notes.html"><i class="fas fa-sticky-note"></i>My Notes</a>
+            <a href="certifications.html" class="active"><i class="fas fa-certificate"></i>My Certifications</a>
+            <a href="learning_history.html"><i class="fas fa-history"></i>Learning History</a>
+            <a href="profile.html"><i class="fas fa-user"></i>Profile</a>
+        </nav>
+    </aside>
+    <main>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1><i class="fas fa-certificate me-2"></i>My Certifications</h1>
+            <button class="btn btn-primary"><i class="fas fa-upload me-2"></i>Upload Certificate</button>
+        </div>
+        <div class="content-card">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th><i class="fas fa-book me-2"></i>Course</th>
+                            <th><i class="fas fa-calendar me-2"></i>Completion Date & Time</th>
+                            <th><i class="fas fa-cog me-2"></i>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Python Fundamentals</td>
+                            <td>June 15, 2025 - 2:30 PM</td>
+                            <td><button class="btn btn-sm btn-outline-primary"><i class="fas fa-download me-1"></i>Download</button></td>
+                        </tr>
+                        <tr>
+                            <td>Agile Project Management</td>
+                            <td>May 22, 2025 - 4:15 PM</td>
+                            <td><button class="btn btn-sm btn-outline-primary"><i class="fas fa-download me-1"></i>Download</button></td>
+                        </tr>
+                        <tr>
+                            <td>Data Science with R</td>
+                            <td><span class="text-muted">In Progress</span></td>
+                            <td><button class="btn btn-sm btn-outline-secondary" disabled><i class="fas fa-clock me-1"></i>Pending</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
