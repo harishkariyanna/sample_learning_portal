@@ -1,0 +1,38 @@
+<div class="container mt-4">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
+    <div class="container-fluid">
+      <span class="navbar-brand">Dashboard</span>
+      <button (click)="logout()" class="btn btn-outline-light">Logout</button>
+    </div>
+  </nav>
+  
+  <div class="row" *ngIf="currentUser">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header bg-info text-white">
+          <h2 class="mb-0">Welcome!</h2>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-6">
+              <h5>User Information</h5>
+              <p><strong>Name:</strong> {{currentUser.name}}</p>
+              <p><strong>Email:</strong> {{currentUser.email}}</p>
+              <p><strong>Role:</strong> {{currentUser.role === 1 ? 'Employee' : 'Admin'}}</p>
+              <p>You have successfully logged in to the authentication system.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="row mt-4" *ngIf="currentUser">
+    <div class="col-12">
+      <div class="alert alert-success">
+        <h4 class="alert-heading">Dashboard</h4>
+        <p>This is your main dashboard. You can access various features from here.</p>
+      </div>
+    </div>
+  </div>
+</div>

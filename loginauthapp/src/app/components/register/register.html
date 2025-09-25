@@ -1,0 +1,52 @@
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6 col-lg-4">
+      <div class="card">
+        <div class="card-body">
+          <h2 class="card-title text-center mb-4">Register</h2>
+          <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+            <div class="mb-3">
+              <label class="form-label">Name:</label>
+              <input type="text" class="form-control" formControlName="name" required>
+              <div class="text-danger" *ngIf="registerForm.get('name')?.invalid && registerForm.get('name')?.touched">
+                Please enter your name
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Email:</label>
+              <input type="email" class="form-control" formControlName="email" required>
+              <div class="text-danger" *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched">
+                Please enter a valid email
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Password:</label>
+              <input type="password" class="form-control" formControlName="password" required>
+              <div class="text-danger" *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">
+                Password must be at least 6 characters
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Confirm Password:</label>
+              <input type="password" class="form-control" formControlName="confirmPassword" required>
+              <div class="text-danger" *ngIf="registerForm.get('confirmPassword')?.invalid && registerForm.get('confirmPassword')?.touched">
+                Please confirm your password
+              </div>
+            </div>
+            <div class="alert alert-danger" *ngIf="errorMessage">{{errorMessage}}</div>
+            <div class="alert alert-success" *ngIf="successMessage">
+              {{successMessage}}
+              <br><br>
+              <button class="btn btn-sm btn-success" (click)="goToDashboard()">Go to Dashboard</button>
+            </div>
+            <button type="submit" class="btn btn-primary w-100" [disabled]="!registerForm.valid || isLoading">
+              <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2"></span>
+              {{isLoading ? 'Registering...' : 'Register'}}
+            </button>
+            <p class="text-center mt-3"><a routerLink="/login" class="text-decoration-none">Already have an account? Login</a></p>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
